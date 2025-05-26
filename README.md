@@ -12,7 +12,7 @@
 - **フロントエンド**：React + Vite + React Router  
 - **状態管理**：useState / Context API（必要に応じて）  
 - **データ取得**：axios による JSON ローカルフェッチ  
-- **スタイリング**：Tailwind CSS  
+- **スタイリング**：bootstrap CSS  
 - **使用予定API**：Google Maps API / Notification API / EmailJS など  
 
 ---
