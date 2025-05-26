@@ -1,0 +1,89 @@
+* {
+  box-sizing: border-box;
+  margin: 0 auto;
+}
+input:focus::placeholder {
+  color: transparent;
+}
+input:focus {
+  outline: none;
+  box-shadow: none;
+}
+.custom-nav {
+  background-color: #fad4c0;
+  padding: 10px;
+  border-radius: 8px;
+}
+
+.custom-nav .nav-link {
+  color: #6b4c3b;
+}
+
+.custom-nav .nav-link:hover,
+.custom-nav .nav-link:focus {
+  color: white !important;
+  background-color: #f4d1ba !important;
+  text-decoration: none;
+}
+.custom-nav .nav-link.active {
+  background-color: #f6a97a;
+  color: white;
+  border-radius: 5px;
+}
+.title {
+  text-align: left;
+  margin-bottom: 30px;
+  cursor: pointer;
+}
+.login {
+  margin: 0;
+  padding: 0;
+  text-align: right;
+  cursor: pointer;
+}
+.main_search {
+  margin: 20px 0 20px 20px;
+  width: 340px;
+  padding: 10px;
+  height: 45px;
+  border: 1px solid #ccc;
+  border-right: none;
+  border-top-left-radius: 6px;
+  border-bottom-left-radius: 6px;
+}
+
+.main_select {
+  height: 45px;
+  padding: 10px;
+  border: 1px solid #ccc;
+  border-left: none;
+  border-top-right-radius: 6px;
+  border-bottom-right-radius: 6px;
+  background-color: white;
+}
+.main_button button {
+  margin: 10px 10px 40px 0px;
+  padding: 10px 20px;
+  background-color: #e9d8c3;
+  color: white;
+  border: none;
+  border-radius: 6px;
+  font-weight: bold;
+  cursor: pointer;
+}
+.main_button button:hover {
+  background-color: #f59a60;
+}
+.heart {
+  font-size: 20px;
+  background: none;
+  border: none;
+  cursor: pointer;
+  margin-right: 10px;
+  transition: transform 0.2s;
+}
+
+.heart.active {
+  color: red;
+  transform: scale(1.1);
+}
