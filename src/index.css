@@ -61,8 +61,13 @@ input:focus {
   border-bottom-right-radius: 6px;
   background-color: white;
 }
+.main_button a {
+  background-color: #e9d8c3;
+  color: white;
+  border: none;
+}
 .main_button button {
-  margin: 10px 10px 40px 0px;
+  margin: 10px 10px 4% 0px;
   padding: 10px 20px;
   background-color: #e9d8c3;
   color: white;
@@ -86,4 +91,8 @@ input:focus {
 .heart.active {
   color: red;
   transform: scale(1.1);
+}
+.dropdown {
+  display: flex;
+  flex-direction: row;
 }

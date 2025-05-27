@@ -2,9 +2,22 @@ import { useState } from "react";
 import "./App.css";
 import Nav from "react-bootstrap/Nav";
 import { Container, Row, Col, Card, Button } from "react-bootstrap";
-import { HeartButton } from "./component/heart.jsx";
+import { CaregiverList } from "./components/CaregiverList.jsx";
+import MultiSelectDropdown from "./components/MultiSelectDropdown.jsx"; // 👈 새로 만든 컴포넌트 임포트
+
 function App() {
-  function handleSelect(selectedKey) {}
+  const [selectedGenders, setSelectedGenders] = useState([]);
+  const [selectedLanguages, setSelectedLanguages] = useState([]);
+
+  const handleSelect = (selectedKey) => {
+    // 네비게이션 로직
+  };
+
+  // 필터 객체를 통합하여 CaregiverList에 전달할 수 있도록
+  const currentFilters = {
+    genders: selectedGenders,
+    languages: selectedLanguages,
+  };
 
   return (
     <>
@@ -49,39 +62,31 @@ function App() {
           <button> 経歴順</button>
           <button>時給順</button>
           <button>オンライン</button>
-          <select class="dropdown-toggle">
-            <option value="">その他</option>
-            <option value="gender">性別</option>
-            <option value="language">言語</option>
-          </select>
+          <button>気に入り</button>
+          <div className="dropdown">
+            <MultiSelectDropdown
+              title="性別"
+              options={[
+                { label: "男性", value: "male" },
+                { label: "女性", value: "female" },
+              ]}
+              selectedValues={selectedGenders}
+              onValueChange={setSelectedGenders}
+            />
+            <MultiSelectDropdown
+              title="言語"
+              options={[
+                { label: "日本語", value: "japanese" },
+                { label: "英語", value: "english" },
+                { label: "韓国語", value: "korean" },
+              ]}
+              selectedValues={selectedLanguages}
+              onValueChange={setSelectedLanguages}
+            />
+          </div>
         </div>
-        <Container>
-          <Row>
-            {[1, 2, 3, 4].map((_, idx) => (
-              <Col key={idx} xs={12} sm={3} md={4}>
-                <Card
-                  style={{
-                    width: "100%",
-                    marginBottom: "20px",
-                    padding: "0px",
-                  }}
-                >
-                  <Card.Img
-                    style={{ width: "80%" }}
-                    variant="top"
-                    src="/img/image.png"
-                  />
-                  <Card.Body>
-                    <Card.Title>お名前</Card.Title>
-                    <Card.Text>経歴,情報など</Card.Text>
-                    <HeartButton /> {/* ← ✅ 이렇게 */}
-                    <Button variant="primary">要約</Button>
-                  </Card.Body>
-                </Card>
-              </Col>
-            ))}
-          </Row>
-        </Container>
+        <h2>介護士を探す</h2>
+        <CaregiverList currentFilters={currentFilters} />
       </div>
     </>
   );
