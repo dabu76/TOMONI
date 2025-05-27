@@ -1,4 +1,3 @@
-@@ -1,102 +1,12 @@
 # TOMONI
 介護サービスサイト
 # 🧑‍⚕️ ケアマッチングプラットフォーム（MVP）
@@ -18,7 +17,7 @@ Currently, two official plugins are available:
 - **フロントエンド**：React + Vite + React Router  
 - **状態管理**：useState / Context API（必要に応じて）  
 - **データ取得**：axios による JSON ローカルフェッチ  
-- **スタイリング**：bootstrap CSS  
+- **スタイリング**：reactbootstrap CSS  
 - **使用予定API**：Google Maps API / Notification API / EmailJS など  
 
 ---
