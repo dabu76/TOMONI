@@ -72,8 +72,8 @@ Currently, two official plugins are available:
 
 /src
 ├── /data # Mock用 JSON
-│ ├── caregivers.json
-│ └── patients.json
+│ ├── caregivers.jsonl
+│ └── patients.jsonl
 ├── /pages # 画面構成
 │ ├── Home.jsx
 │ ├── CaregiverList.jsx
