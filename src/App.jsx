@@ -3,17 +3,28 @@ import "./App.css";
 import Nav from "react-bootstrap/Nav";
 import { Container, Row, Col, Card, Button } from "react-bootstrap";
 import { CaregiverList } from "./components/CaregiverList.jsx";
-import MultiSelectDropdown from "./components/MultiSelectDropdown.jsx"; // 👈 새로 만든 컴포넌트 임포트
-
+import MultiSelectDropdown from "./components/MultiSelectDropdown.jsx";
+import { useSearch } from "./hooks/useSearch.jsx";
+import { useCurrentLocation } from "./hooks/useCurrentLocation.jsx";
 function App() {
-  const [selectedGenders, setSelectedGenders] = useState([]);
-  const [selectedLanguages, setSelectedLanguages] = useState([]);
-
-  const handleSelect = (selectedKey) => {
-    // 네비게이션 로직
+  const onSearch = (keyword) => {
+    console.log("検索", keyword);
   };
 
-  // 필터 객체를 통합하여 CaregiverList에 전달할 수 있도록
+  const [selectedGenders, setSelectedGenders] = useState([]);
+  const [selectedLanguages, setSelectedLanguages] = useState([]);
+  const { search, setSearch, handleChange, handleKeyDown } =
+    useSearch(onSearch);
+  useCurrentLocation(setSearch);
+
+  const handleSelect = (selectedKey) => {};
+  const handleInputChange = (e) => {
+    setSearch(e.target.value);
+  };
+
+  const handleSelectChange = (e) => {
+    setSearch(e.target.value);
+  };
   const currentFilters = {
     genders: selectedGenders,
     languages: selectedLanguages,
@@ -45,17 +56,27 @@ function App() {
       <div className="main_wrapper">
         <div>
           <input
-            className="main_search"
             type="text"
-            placeholder=" 検索機能(地域) "
+            className="main_search"
+            placeholder="検索機能(地域)"
+            value={search}
+            onChange={handleChange}
+            onKeyDown={handleKeyDown}
           />
-          <select className="main_select">
+          <select
+            value={search}
+            onChange={(e) => setSearch(e.target.value)}
+            className="main_select"
+          >
             <option value="">地域を選択</option>
-            <option value="tokyo">東京都</option>
-            <option value="nagoya">名古屋市</option>
-            <option value="osaka">大阪市</option>
-            <option value="kyoto">京都市</option>
+            <option value="東京都">東京都</option>
+            <option value="名古屋市">名古屋市</option>
+            <option value="大阪市">大阪市</option>
+            <option value="京都市">京都市</option>
           </select>
+          <button className="search_Btn" onClick={() => onSearch(search)}>
+            検索
+          </button>
         </div>
         <div className="main_button">
           <button>距離順</button>
@@ -86,7 +107,7 @@ function App() {
           </div>
         </div>
         <h2>介護士を探す</h2>
-        <CaregiverList currentFilters={currentFilters} />
+        <CaregiverList currentFilters={currentFilters} search={search} />
       </div>
     </>
   );

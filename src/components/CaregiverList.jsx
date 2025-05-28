@@ -65,7 +65,7 @@ export function CaregiverList({ currentFilters }) {
                 }}
               >
                 <Card.Img
-                  style={{ width: "100%", height: "180px", objectFit: "cover" }}
+                  style={{ width: "100%", height: "180px" }}
                   variant="top"
                   src="/img/image.png"
                 />

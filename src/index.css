@@ -62,9 +62,18 @@ input:focus {
   background-color: white;
 }
 .main_button a {
+  background-color: #f59a60;
+  color: white;
+  border: none;
+}
+.main_button a:hover {
   background-color: #e9d8c3;
   color: white;
   border: none;
+}
+.main_button a:focus:active {
+  background-color: #e9d8c3 !important;
+  box-shadow: none !important;
 }
 .main_button button {
   margin: 10px 10px 4% 0px;
@@ -95,4 +104,13 @@ input:focus {
 .dropdown {
   display: flex;
   flex-direction: row;
+}
+.search_Btn {
+  width: 70px;
+  height: 45px;
+  border-radius: 5px;
+  margin-left: 20px;
+  background-color: #f59a60;
+  color: white;
+  border: none;
 }
