@@ -41,24 +41,14 @@ input:focus {
   text-align: right;
   cursor: pointer;
 }
-.main_search {
-  margin: 20px 0 20px 20px;
-  width: 340px;
-  padding: 10px;
-  height: 45px;
-  border: 1px solid #ccc;
-  border-right: none;
-  border-top-left-radius: 6px;
-  border-bottom-left-radius: 6px;
-}
 
 .main_select {
+  width: 300px;
+  margin: 20px;
   height: 45px;
   padding: 10px;
   border: 1px solid #ccc;
-  border-left: none;
-  border-top-right-radius: 6px;
-  border-bottom-right-radius: 6px;
+
   background-color: white;
 }
 .main_button {
@@ -122,13 +112,4 @@ input:focus {
 .dropdown {
   display: flex;
   flex-direction: row;
-}
-.search_Btn {
-  width: 70px;
-  height: 45px;
-  border-radius: 5px;
-  margin-left: 20px;
-  background-color: #f59a60;
-  color: white;
-  border: none;
 }

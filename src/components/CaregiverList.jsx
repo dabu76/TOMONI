@@ -98,6 +98,8 @@ export function CaregiverList({ coords, currentFilters }) {
                   <Card.Text>
                     {c.age}歳 / 経験: {c.experience}年 / 時給: ¥{c.hourlyRate}
                     <br />
+                    距離: {c.distance?.toFixed(2)} km
+                    <br />
                     {c.available ? "勤務可能" : "現在休止中"}
                   </Card.Text>
                   <HeartButton />

@@ -6,6 +6,8 @@ import { CaregiverList } from "./components/CaregiverList.jsx";
 import MultiSelectDropdown from "./components/MultiSelectDropdown.jsx";
 import { useSearch } from "./hooks/useSearch.jsx";
 import { useCurrentLocation } from "./hooks/useCurrentLocation.jsx";
+import { LocationSelect } from "./components/LocationSelect.jsx";
+
 function App() {
   const onSearch = (keyword) => {
     console.log("検索", keyword);
@@ -15,7 +17,6 @@ function App() {
   const [selectedLanguages, setSelectedLanguages] = useState([]);
   const { search, setSearch, handleChange, handleKeyDown } =
     useSearch(onSearch);
-  const [location, setLocation] = useState("");
   const [coords, setCoords] = useState(0);
   useCurrentLocation((cityName, coords) => {
     setSearch(cityName);
@@ -52,28 +53,11 @@ function App() {
       </Nav>
       <div className="main_wrapper">
         <div>
-          <input
-            type="text"
-            className="main_search"
-            placeholder="検索機能(地域)"
-            value={search}
-            onChange={handleChange}
-            onKeyDown={handleKeyDown}
+          <LocationSelect
+            coords={coords}
+            setCoords={setCoords}
+            setSearch={setSearch}
           />
-          <select
-            value={search}
-            onChange={(e) => setSearch(e.target.value)}
-            className="main_select"
-          >
-            <option value="">地域を選択</option>
-            <option value="東京都">東京都</option>
-            <option value="名古屋市">名古屋市</option>
-            <option value="大阪市">大阪市</option>
-            <option value="京都市">京都市</option>
-          </select>
-          <button className="search_Btn" onClick={() => onSearch(search)}>
-            検索
-          </button>
         </div>
         <div className="main_button">
           <button>距離順</button>
