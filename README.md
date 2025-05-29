@@ -70,21 +70,30 @@ Currently, two official plugins are available:
 
 ## 📁 フォルダ構成（予定）
 
+bash
+/public
+├── /img
+│   ├── background.png
+│   └── caregiverimg.png
+├── /data
+│   ├── caregiver_profile.jsonl
+└── └── patient.json
 /src
-├── /data # Mock用 JSON
-│ ├── caregivers.jsonl
-│ └── patients.jsonl
-├── /pages # 画面構成
-│ ├── Home.jsx
-│ ├── CaregiverList.jsx
-│ ├── CaregiverDetail.jsx
-│ └── MyPage.jsx
-├── /hooks # カスタムフック
-│ └── useCaregiver.js
-├── /components # UIコンポーネント
-│ └── CaregiverCard.jsx
+├── /pages
+│   ├── Home.jsx
+│   ├── CaregiverList.jsx
+│   ├── CaregiverDetail.jsx
+│   └── MyPage.jsx
+├── /hooks
+│   └── useSearch.jsx
+│   ├── useDetailinformation.jsx
+│   ├── usePagination.jsx
+│   └── useCurrentLocation.jsx
+├── /components
+│   └── CaregiverList.jsx
+│   ├── heart.jsx
+│   └── multiselectDropdown.jsx
 └── App.jsx
-
 ---
 
 ## 💡 今後の展望（Next Step）
