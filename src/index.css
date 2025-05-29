@@ -61,6 +61,12 @@ input:focus {
   border-bottom-right-radius: 6px;
   background-color: white;
 }
+.main_button {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  justify-content: center;
+}
 .main_button a {
   background-color: #f59a60;
   color: white;
@@ -70,6 +76,18 @@ input:focus {
   background-color: #e9d8c3;
   color: white;
   border: none;
+}
+.dropdown {
+  margin: 0px;
+}
+.main_button_item {
+  background-color: #e9d8c3;
+  color: white;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  width: 100px;
+  height: 45px;
 }
 .main_button a:focus:active {
   background-color: #e9d8c3 !important;

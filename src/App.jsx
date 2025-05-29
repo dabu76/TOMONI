@@ -18,13 +18,6 @@ function App() {
   useCurrentLocation(setSearch);
 
   const handleSelect = (selectedKey) => {};
-  const handleInputChange = (e) => {
-    setSearch(e.target.value);
-  };
-
-  const handleSelectChange = (e) => {
-    setSearch(e.target.value);
-  };
   const currentFilters = {
     genders: selectedGenders,
     languages: selectedLanguages,
@@ -84,27 +77,25 @@ function App() {
           <button>時給順</button>
           <button>オンライン</button>
           <button>気に入り</button>
-          <div className="dropdown">
-            <MultiSelectDropdown
-              title="性別"
-              options={[
-                { label: "男性", value: "male" },
-                { label: "女性", value: "female" },
-              ]}
-              selectedValues={selectedGenders}
-              onValueChange={setSelectedGenders}
-            />
-            <MultiSelectDropdown
-              title="言語"
-              options={[
-                { label: "日本語", value: "japanese" },
-                { label: "英語", value: "english" },
-                { label: "韓国語", value: "korean" },
-              ]}
-              selectedValues={selectedLanguages}
-              onValueChange={setSelectedLanguages}
-            />
-          </div>
+          <MultiSelectDropdown
+            title="性別"
+            options={[
+              { label: "男性", value: "male" },
+              { label: "女性", value: "female" },
+            ]}
+            selectedValues={selectedGenders}
+            onValueChange={setSelectedGenders}
+          />
+          <MultiSelectDropdown
+            title="言語"
+            options={[
+              { label: "日本語", value: "japanese" },
+              { label: "英語", value: "english" },
+              { label: "韓国語", value: "korean" },
+            ]}
+            selectedValues={selectedLanguages}
+            onValueChange={setSelectedLanguages}
+          />
         </div>
         <h2>介護士を探す</h2>
         <CaregiverList currentFilters={currentFilters} search={search} />

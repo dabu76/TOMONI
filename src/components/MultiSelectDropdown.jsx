@@ -2,19 +2,17 @@ import React, { useState, useEffect } from "react";
 import { Dropdown, Form, Button } from "react-bootstrap"; // Added Button import for reset
 
 const CustomToggle = React.forwardRef(({ children, onClick }, ref) => (
-  <a
-    href=""
+  <button
     ref={ref}
     onClick={(e) => {
       e.preventDefault();
       onClick(e);
     }}
-    className="btn btn-secondary dropdown-toggle main_button"
+    className="main_button_item"
   >
     {children}
-  </a>
+  </button>
 ));
-
 const CustomDropdownItem = React.forwardRef(
   ({ children, onClick, ...props }, ref) => (
     <div
