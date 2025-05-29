@@ -15,8 +15,12 @@ function App() {
   const [selectedLanguages, setSelectedLanguages] = useState([]);
   const { search, setSearch, handleChange, handleKeyDown } =
     useSearch(onSearch);
-  useCurrentLocation(setSearch);
-
+  const [location, setLocation] = useState("");
+  const [coords, setCoords] = useState(0);
+  useCurrentLocation((cityName, coords) => {
+    setSearch(cityName);
+    setCoords(coords);
+  });
   const handleSelect = (selectedKey) => {};
   const currentFilters = {
     genders: selectedGenders,
@@ -98,7 +102,11 @@ function App() {
           />
         </div>
         <h2>介護士を探す</h2>
-        <CaregiverList currentFilters={currentFilters} search={search} />
+        <CaregiverList
+          coords={coords}
+          currentFilters={currentFilters}
+          search={search}
+        />
       </div>
     </>
   );
