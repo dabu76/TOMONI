@@ -67,7 +67,16 @@ export function CaregiverList({ coords, currentFilters }) {
       .get("/data/caregiver_profiles.jsonl")
       .then((res) => {
         const lines = res.data.split("\n").filter(Boolean);
-        const parsed = lines.map((line) => JSON.parse(line));
+        const parsed = lines
+          .map((line, index) => {
+            try {
+              return JSON.parse(line);
+            } catch (err) {
+              console.error(`Line ${index + 1} JSON parsingエラー:`, line);
+              return null;
+            }
+          })
+          .filter(Boolean);
         setAllCaregivers(parsed);
       })
       .catch((err) => {
