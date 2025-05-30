@@ -71,7 +71,7 @@ export function LocationSelect({ coords, setCoords, setSearch }) {
         }
       );
     }
-  }, [coords, setCoords, setSearch]);
+  }, []);
   // セレクトボックスの選択が変更されたときに実行される処理
   const handleChange = (e) => {
     const selectedName = e.target.value;
@@ -79,7 +79,11 @@ export function LocationSelect({ coords, setCoords, setSearch }) {
     setSearch(selectedName);
 
     const city = CITIES.find((c) => c.name === selectedName);
-    if (city) setCoords({ lat: city.lat, lng: city.lng });
+    if (city) {
+      setCoords({ lat: city.lat, lng: city.lng });
+    } else {
+      setCoords(null);
+    }
   };
 
   return (

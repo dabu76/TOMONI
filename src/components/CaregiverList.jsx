@@ -25,7 +25,7 @@ export function CaregiverList({ coords, currentFilters }) {
           )
       );
     }
-    if (coords && coords.lat && coords.lng) {
+    if (coords !== null && coords.lat && coords.lng) {
       filtered = filtered
         .map((c) => ({
           ...c,
