@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import "./App.css";
 import Nav from "react-bootstrap/Nav";
 import { Container, Row, Col, Card, Button } from "react-bootstrap";
@@ -7,19 +7,33 @@ import MultiSelectDropdown from "./components/MultiSelectDropdown.jsx";
 import { useSearch } from "./hooks/useSearch.jsx";
 import { useCurrentLocation } from "./hooks/useCurrentLocation.jsx";
 import { LocationSelect } from "./components/LocationSelect.jsx";
+import axios from "axios";
 
 function App() {
+  const [user, setUser] = useState(null);
+
+  useEffect(() => {
+    const fetchUser = async () => {
+      try {
+        const res = await axios.get("/data/user_profile.json");
+        setUser(res.data);
+        console.log(res.data);
+      } catch (err) {
+        console.error("データ取得エラー:", err);
+      }
+    };
+
+    fetchUser();
+  }, []);
   const onSearch = (keyword) => {
     console.log("検索", keyword);
   };
-
+  const [sortValue, setSortValue] = useState("");
   const [selectedGenders, setSelectedGenders] = useState([]);
   const [selectedLanguages, setSelectedLanguages] = useState([]);
-  const { search, setSearch, handleChange, handleKeyDown } =
-    useSearch(onSearch);
+  const { search, setSearch } = useSearch(onSearch);
   const [coords, setCoords] = useState(0);
   useCurrentLocation((cityName, coords) => {
-    setSearch(cityName);
     setCoords(coords);
   });
   const handleSelect = (selectedKey) => {};
@@ -60,11 +74,11 @@ function App() {
           />
         </div>
         <div className="main_button">
-          <button>距離順</button>
-          <button> 経歴順</button>
-          <button>時給順</button>
-          <button>オンライン</button>
-          <button>気に入り</button>
+          <button onClick={() => setSortValue("距離順")}>距離順</button>
+          <button onClick={() => setSortValue("経歴順")}> 経歴順</button>
+          <button onClick={() => setSortValue("時給順")}>時給順</button>
+          <button onClick={() => setSortValue("オンライン")}>オンライン</button>
+          <button onClick={() => setSortValue("気に入り")}>気に入り</button>
           <MultiSelectDropdown
             title="性別"
             options={[
@@ -87,9 +101,9 @@ function App() {
         </div>
         <h2>介護士を探す</h2>
         <CaregiverList
+          sortValue={sortValue}
           coords={coords}
           currentFilters={currentFilters}
-          search={search}
         />
       </div>
     </>

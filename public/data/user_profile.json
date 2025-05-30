@@ -1,0 +1,11 @@
+{
+  "position": "customer",
+  "id": 10001,
+  "userId": "customer01",
+  "name": "cho",
+  "age": 71,
+  "disease": "Diabetes",
+  "medicines": [{ "name": "medicines", "time": "10:30", "alarm": true }],
+  "favorite": [1, 5],
+  "notes": "10時半にはお薬を飲まなければならない"
+}

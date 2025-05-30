@@ -4,11 +4,11 @@ import { Container, Row, Col, Card, Button } from "react-bootstrap";
 import { HeartButton } from "../components/Heart.jsx";
 import { usePagination } from "../hooks/usePagination.jsx";
 
-export function CaregiverList({ coords, currentFilters }) {
+export function CaregiverList({ coords, currentFilters, sortValue }) {
   const [allCaregivers, setAllCaregivers] = useState([]);
 
   const filteredCaregivers = useMemo(() => {
-    let filtered = allCaregivers;
+    let filtered = [...allCaregivers];
 
     if (currentFilters.genders?.length > 0) {
       filtered = filtered.filter((caregiver) =>
@@ -37,12 +37,23 @@ export function CaregiverList({ coords, currentFilters }) {
             c.location.lng
           ),
         }))
-        .filter((c) => c.distance <= 30)
-        .sort((a, b) => a.distance - b.distance);
+        .filter((c) => c.distance <= 30);
+    }
+
+    if (sortValue === "距離順") {
+      filtered.sort((a, b) => a.distance - b.distance);
+    } else if (sortValue === "経歴順") {
+      filtered.sort((a, b) => b.experience - a.experience);
+    } else if (sortValue === "時給順") {
+      filtered.sort((a, b) => b.hourlyRate - a.hourlyRate);
+    } else if (sortValue === "オンライン") {
+      filtered = filtered.filter((c) => c.available);
+    } else if (sortValue === "気に入り") {
+      filtered = filtered.filter((c) => c.liked === true);
     }
 
     return filtered;
-  }, [allCaregivers, currentFilters, coords]);
+  }, [allCaregivers, currentFilters, coords, sortValue]);
 
   function calculateDistance(lat1, lng1, lat2, lng2) {
     const R = 6371;
@@ -105,7 +116,7 @@ export function CaregiverList({ coords, currentFilters }) {
               <Card.Img
                 style={{ width: "100%", height: "180px" }}
                 variant="top"
-                src="/img/image.png"
+                src={c.image}
               />
               <Card.Body>
                 <Card.Title>{c.name}</Card.Title>
