@@ -6,17 +6,17 @@ import { usePagination } from "../hooks/usePagination.jsx";
 
 export function CaregiverList({ coords, currentFilters }) {
   const [allCaregivers, setAllCaregivers] = useState([]);
-  console.log(coords);
+
   const filteredCaregivers = useMemo(() => {
     let filtered = allCaregivers;
 
-    if (currentFilters.genders && currentFilters.genders.length > 0) {
+    if (currentFilters.genders?.length > 0) {
       filtered = filtered.filter((caregiver) =>
         currentFilters.genders.includes(caregiver.gender)
       );
     }
 
-    if (currentFilters.languages && currentFilters.languages.length > 0) {
+    if (currentFilters.languages?.length > 0) {
       filtered = filtered.filter(
         (caregiver) =>
           caregiver.languages &&
@@ -25,7 +25,8 @@ export function CaregiverList({ coords, currentFilters }) {
           )
       );
     }
-    if (coords !== null && coords.lat && coords.lng) {
+
+    if (coords?.lat && coords?.lng) {
       filtered = filtered
         .map((c) => ({
           ...c,
@@ -39,8 +40,10 @@ export function CaregiverList({ coords, currentFilters }) {
         .filter((c) => c.distance <= 30)
         .sort((a, b) => a.distance - b.distance);
     }
+
     return filtered;
   }, [allCaregivers, currentFilters, coords]);
+
   function calculateDistance(lat1, lng1, lat2, lng2) {
     const R = 6371;
     const dLat = ((lat2 - lat1) * Math.PI) / 180;
@@ -53,14 +56,21 @@ export function CaregiverList({ coords, currentFilters }) {
     const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
     return R * c;
   }
+
   const itemsPerPage = 9;
+  const pageGroupSize = 5;
 
   const {
     currentItems: caregivers,
     currentPage,
     totalPages,
+    visiblePageNumbers,
     goToPage,
-  } = usePagination(filteredCaregivers, itemsPerPage);
+    goToNextPageGroup,
+    goToPrevPageGroup,
+    hasPrevGroup,
+    hasNextGroup,
+  } = usePagination(filteredCaregivers, itemsPerPage, pageGroupSize);
 
   useEffect(() => {
     axios
@@ -87,42 +97,47 @@ export function CaregiverList({ coords, currentFilters }) {
   return (
     <Container>
       <Row>
-        {Array.isArray(caregivers) &&
-          caregivers.map((c) => (
-            <Col key={c.id} xs={12} sm={3} md={4}>
-              <Card
-                style={{
-                  width: "100%",
-                  marginBottom: "20px",
-                  padding: "0px",
-                }}
-              >
-                <Card.Img
-                  style={{ width: "100%", height: "180px" }}
-                  variant="top"
-                  src="/img/image.png"
-                />
-                <Card.Body>
-                  <Card.Title>{c.name}</Card.Title>
-                  <Card.Text>
-                    {c.age}歳 / 経験: {c.experience}年 / 時給: ¥{c.hourlyRate}
-                    <br />
-                    距離: {c.distance?.toFixed(2)} km
-                    <br />
-                    {c.available ? "勤務可能" : "現在休止中"}
-                  </Card.Text>
-                  <HeartButton />
-                  <Button className="main_button">予約</Button>
-                </Card.Body>
-              </Card>
-            </Col>
-          ))}
+        {caregivers.map((c) => (
+          <Col key={c.id} xs={12} sm={3} md={4}>
+            <Card
+              style={{ width: "100%", marginBottom: "20px", padding: "0px" }}
+            >
+              <Card.Img
+                style={{ width: "100%", height: "180px" }}
+                variant="top"
+                src="/img/image.png"
+              />
+              <Card.Body>
+                <Card.Title>{c.name}</Card.Title>
+                <Card.Text>
+                  {c.age}歳 / 経験: {c.experience}年 / 時給: ¥{c.hourlyRate}
+                  <br />
+                  距離: {c.distance?.toFixed(2)} km
+                  <br />
+                  {c.available ? "勤務可能" : "現在休止中"}
+                </Card.Text>
+                <HeartButton />
+                <Button className="main_button">予約</Button>
+              </Card.Body>
+            </Card>
+          </Col>
+        ))}
       </Row>
 
       <div
         style={{ display: "flex", justifyContent: "center", marginTop: "20px" }}
       >
-        {Array.from({ length: totalPages }, (_, i) => i + 1).map((pageNum) => (
+        {hasPrevGroup && (
+          <Button
+            className="main_button"
+            onClick={goToPrevPageGroup}
+            style={{ margin: "0 5px" }}
+          >
+            &lt;
+          </Button>
+        )}
+
+        {visiblePageNumbers.map((pageNum) => (
           <Button
             className="main_button"
             key={pageNum}
@@ -133,6 +148,16 @@ export function CaregiverList({ coords, currentFilters }) {
             {pageNum}
           </Button>
         ))}
+
+        {hasNextGroup && (
+          <Button
+            className="main_button"
+            onClick={goToNextPageGroup}
+            style={{ margin: "0 5px" }}
+          >
+            &gt;
+          </Button>
+        )}
       </div>
     </Container>
   );
