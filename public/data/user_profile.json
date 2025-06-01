@@ -6,6 +6,6 @@
   "age": 71,
   "disease": "Diabetes",
   "medicines": [{ "name": "medicines", "time": "10:30", "alarm": true }],
-  "favorite": [1, 5],
+  "favorite": [1, 5, 6, 56],
   "notes": "10時半にはお薬を飲まなければならない"
 }
