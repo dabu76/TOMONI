@@ -1,6 +1,12 @@
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 
-export function useCurrentLocation(callback) {
+export function useCurrentLocation() {
+  const [locationInfo, setLocationInfo] = useState({
+    city: "",
+    coords: null,
+    isLoaded: false,
+  });
+
   useEffect(() => {
     navigator.geolocation.getCurrentPosition(
       async (pos) => {
@@ -8,17 +14,25 @@ export function useCurrentLocation(callback) {
         const lng = pos.coords.longitude;
 
         const cityName = await reverseGeocode(lat, lng);
-        callback(cityName, { lat, lng }); // 都市と座標を渡して距離計算をする
+        setLocationInfo({
+          city: cityName,
+          coords: { lat, lng },
+          isLoaded: true,
+        });
       },
       () => {
-        // もし位置情報をもらえなかったら名古屋
-        callback("名古屋市", null);
+        setLocationInfo({
+          city: "東京都",
+          coords: { lat: 35.6895, lng: 139.6917 },
+          isLoaded: true,
+        });
       }
     );
   }, []);
+
+  return locationInfo;
 }
 
-// 逆ジオコーディング:緯度/経度→都市名
 async function reverseGeocode(lat, lng) {
   const response = await fetch(
     `https://maps.googleapis.com/maps/api/geocode/json?latlng=${lat},${lng}&language=ja&key=${
