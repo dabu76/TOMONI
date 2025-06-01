@@ -230,7 +230,9 @@ export function CaregiverList({
               variant="outline-primary"
               onClick={goToPrevPageGroup}
               style={{ margin: "0 5px" }}
-            ></Button>
+            >
+              {" <"}
+            </Button>
           )}
           {visiblePageNumbers.map((pageNum) => (
             <Button
@@ -247,7 +249,9 @@ export function CaregiverList({
               variant="outline-primary"
               onClick={goToNextPageGroup}
               style={{ margin: "0 5px" }}
-            ></Button>
+            >
+              {" >"}
+            </Button>
           )}
         </div>
       )}
