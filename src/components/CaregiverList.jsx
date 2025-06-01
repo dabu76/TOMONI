@@ -10,17 +10,17 @@ export function CaregiverList({
   currentFilters,
   sortValue,
   userLocationLoaded,
-  currentUserCoords, //  ユーザーの現在地座標を受け取る
+  currentUserCoords,
 }) {
   const [allCaregivers, setAllCaregivers] = useState([]);
   const [user, setUser] = useState(null);
-  const [dataLoading, setDataLoading] = useState(true); // データ読み込み状態
+  const [dataLoading, setDataLoading] = useState(true);
 
   useEffect(() => {
     setDataLoading(true);
     Promise.all([
-      axios.get("/data/caregiver_profiles.jsonl"), // ローカルJSONLファイル
-      axios.get("/data/user_profile.json"), // ローカルJSONファイル
+      axios.get("/data/caregiver_profiles.jsonl"),
+      axios.get("/data/user_profile.json"),
     ])
       .then(([caregiversRes, userRes]) => {
         const lines = caregiversRes.data.split("\n").filter(Boolean);
@@ -43,7 +43,7 @@ export function CaregiverList({
       .finally(() => {
         setDataLoading(false);
       });
-  }, []); // 初回のみ実行
+  }, []);
 
   const filteredCaregivers = useMemo(() => {
     let filtered = [...allCaregivers];
@@ -80,7 +80,7 @@ export function CaregiverList({
           }
           return { ...c, distance: null };
         })
-        .filter((c) => c.distance != null && c.distance <= 30); // 30km以内のみ
+        .filter((c) => c.distance != null && c.distance <= 30);
     } else {
       filtered = filtered.map((c) => ({ ...c, distance: null }));
     }
@@ -127,7 +127,6 @@ export function CaregiverList({
     hasNextGroup,
   } = usePagination(filteredCaregivers, itemsPerPage, pageGroupSize);
 
-  // ローディング状態の表示: userLocationLoaded は現在地、dataLoading はデータ自体
   if (!userLocationLoaded && dataLoading) {
     return <p>位置情報と介護士データを読み込んでいます...</p>;
   }
@@ -143,7 +142,6 @@ export function CaregiverList({
       <Row>
         {caregiversToDisplay.length > 0 ? (
           caregiversToDisplay.map((c) => {
-            //  現在地からの距離（カード表示用）
             let distanceFromUser = null;
             if (
               currentUserCoords &&

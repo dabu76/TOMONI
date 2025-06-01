@@ -7,13 +7,11 @@ import { useCurrentLocation } from "./hooks/useCurrentLocation.jsx";
 import { LocationSelect } from "./components/LocationSelect.jsx";
 import { calculateDistance } from "./hooks/geometry";
 
-// 都市リストの定義
 const CITIES = [
   { name: "東京都", lat: 35.6895, lng: 139.6917 },
   { name: "名古屋市", lat: 35.1815, lng: 136.9066 },
   { name: "大阪市", lat: 34.6937, lng: 135.5023 },
   { name: "京都市", lat: 35.0116, lng: 135.7681 },
-  // 必要に応じて他の都市を追加
 ];
 
 function App() {
@@ -22,36 +20,33 @@ function App() {
     coords: currentUserCoords,
     isLoaded: userLocationLoaded,
   } = useCurrentLocation();
-  const [sortValue, setSortValue] = useState(""); // ソート基準
+  const [sortValue, setSortValue] = useState("");
   const [selectedGenders, setSelectedGenders] = useState([]);
   const [selectedLanguages, setSelectedLanguages] = useState([]);
 
-  const [selectedCityName, setSelectedCityName] = useState(""); // 選択された都市名
-  const [selectedCityCoords, setSelectedCityCoords] = useState(null); // 選択された都市の座標
-  const [distanceToSelectedCity, setDistanceToSelectedCity] = useState(null); // 現在地から選択都市までの距離
+  const [selectedCityName, setSelectedCityName] = useState("");
+  const [selectedCityCoords, setSelectedCityCoords] = useState(null);
+  const [distanceToSelectedCity, setDistanceToSelectedCity] = useState(null);
 
-  // 初回読み込み時に現在地の都市を選択状態に設定
   useEffect(() => {
     if (userLocationLoaded && currentUserCity && !selectedCityName) {
       setSelectedCityName(currentUserCity);
     }
   }, [userLocationLoaded, currentUserCity]);
 
-  // 選択された都市名が変更されたら座標を更新
   useEffect(() => {
     if (selectedCityName) {
       const cityData = CITIES.find((c) => c.name === selectedCityName);
       if (cityData) {
         setSelectedCityCoords({ lat: cityData.lat, lng: cityData.lng });
       } else {
-        setSelectedCityCoords(null); // 「地域を選択」または一致する都市がない場合
+        setSelectedCityCoords(null);
       }
     } else {
-      setSelectedCityCoords(null); // 都市未選択時
+      setSelectedCityCoords(null);
     }
   }, [selectedCityName]);
 
-  // 現在地または選択都市の座標が変更されたら距離を再計算
   useEffect(() => {
     if (currentUserCoords && selectedCityCoords) {
       const dist = calculateDistance(
@@ -62,7 +57,7 @@ function App() {
       );
       setDistanceToSelectedCity(dist);
     } else {
-      setDistanceToSelectedCity(null); // 座標が揃っていない場合は距離計算しない
+      setDistanceToSelectedCity(null);
     }
   }, [currentUserCoords, selectedCityCoords]);
 
