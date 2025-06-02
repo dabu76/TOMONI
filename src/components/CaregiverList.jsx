@@ -6,11 +6,11 @@ import { usePagination } from "../hooks/usePagination.jsx";
 import { calculateDistance } from "../hooks/geometry";
 
 export function CaregiverList({
-  fixedCoords,
   currentFilters,
   sortValue,
   userLocationLoaded,
   currentUserCoords,
+  selectedCityName,
 }) {
   const [allCaregivers, setAllCaregivers] = useState([]);
   const [user, setUser] = useState(null);
@@ -29,7 +29,7 @@ export function CaregiverList({
             try {
               return JSON.parse(line);
             } catch (err) {
-              console.error(`Line ${index + 1} のJSONパースエラー:`, line, err);
+              console.error(`Line ${index + 1} JSON パシフィックエラー:`, err);
               return null;
             }
           })
@@ -38,7 +38,7 @@ export function CaregiverList({
         setUser(userRes.data);
       })
       .catch((err) => {
-        console.error("データ取得エラー:", err);
+        console.error("データエラー:", err);
       })
       .finally(() => {
         setDataLoading(false);
@@ -49,51 +49,49 @@ export function CaregiverList({
     let filtered = [...allCaregivers];
 
     if (currentFilters.genders?.length > 0) {
-      filtered = filtered.filter((caregiver) =>
-        currentFilters.genders.includes(caregiver.gender)
+      filtered = filtered.filter((c) =>
+        currentFilters.genders.includes(c.gender)
       );
     }
 
     if (currentFilters.languages?.length > 0) {
       filtered = filtered.filter(
-        (caregiver) =>
-          caregiver.languages &&
-          currentFilters.languages.every((selectedLang) =>
-            caregiver.languages.includes(selectedLang)
-          )
+        (c) =>
+          c.languages &&
+          currentFilters.languages.every((lang) => c.languages.includes(lang))
       );
     }
 
-    if (fixedCoords?.lat != null && fixedCoords?.lng != null) {
-      filtered = filtered
-        .map((c) => {
-          if (c.location?.lat != null && c.location?.lng != null) {
-            return {
-              ...c,
-              distance: calculateDistance(
-                fixedCoords.lat,
-                fixedCoords.lng,
-                c.location.lat,
-                c.location.lng
-              ),
-            };
-          }
-          return { ...c, distance: null };
-        })
-        .filter((c) => c.distance != null && c.distance <= 30);
+    if (selectedCityName) {
+      filtered = filtered.filter((c) => c.city === selectedCityName);
+    }
+
+    if (currentUserCoords?.lat != null && currentUserCoords?.lng != null) {
+      filtered = filtered.map((c) => {
+        if (c.location?.lat != null && c.location?.lng != null) {
+          return {
+            ...c,
+            distance: calculateDistance(
+              currentUserCoords.lat,
+              currentUserCoords.lng,
+              c.location.lat,
+              c.location.lng
+            ),
+          };
+        }
+        return { ...c, distance: null };
+      });
     } else {
       filtered = filtered.map((c) => ({ ...c, distance: null }));
     }
 
     if (sortValue === "距離順") {
-      if (fixedCoords) {
-        filtered.sort((a, b) => {
-          if (a.distance === null && b.distance === null) return 0;
-          if (a.distance === null) return 1;
-          if (b.distance === null) return -1;
-          return a.distance - b.distance;
-        });
-      }
+      filtered.sort((a, b) => {
+        if (a.distance === null && b.distance === null) return 0;
+        if (a.distance === null) return 1;
+        if (b.distance === null) return -1;
+        return a.distance - b.distance;
+      });
     } else if (sortValue === "経歴順") {
       filtered.sort((a, b) => (b.experience || 0) - (a.experience || 0));
     } else if (sortValue === "時給順") {
@@ -110,11 +108,17 @@ export function CaregiverList({
         filtered = [];
       }
     }
-    return filtered;
-  }, [allCaregivers, currentFilters, fixedCoords, sortValue, user]);
 
-  const itemsPerPage = 9;
-  const pageGroupSize = 5;
+    return filtered;
+  }, [
+    allCaregivers,
+    currentFilters,
+    currentUserCoords,
+    sortValue,
+    user,
+    selectedCityName,
+  ]);
+
   const {
     currentItems: caregiversToDisplay,
     currentPage,
@@ -125,7 +129,7 @@ export function CaregiverList({
     goToPrevPageGroup,
     hasPrevGroup,
     hasNextGroup,
-  } = usePagination(filteredCaregivers, itemsPerPage, pageGroupSize);
+  } = usePagination(filteredCaregivers, 9, 5);
 
   if (!userLocationLoaded && dataLoading) {
     return <p>位置情報と介護士データを読み込んでいます...</p>;
@@ -141,74 +145,51 @@ export function CaregiverList({
     <Container>
       <Row>
         {caregiversToDisplay.length > 0 ? (
-          caregiversToDisplay.map((c) => {
-            let distanceFromUser = null;
-            if (
-              currentUserCoords &&
-              c.location?.lat != null &&
-              c.location?.lng != null
-            ) {
-              distanceFromUser = calculateDistance(
-                currentUserCoords.lat,
-                currentUserCoords.lng,
-                c.location.lat,
-                c.location.lng
-              );
-            }
-
-            return (
-              <Col
-                key={c.id}
-                xs={12}
-                sm={6}
-                md={4}
-                style={{ marginBottom: "20px" }}
-              >
-                <Card style={{ width: "100%", padding: "0px" }}>
-                  <Card.Img
+          caregiversToDisplay.map((c) => (
+            <Col
+              key={c.id}
+              xs={12}
+              sm={6}
+              md={4}
+              style={{ marginBottom: "20px" }}
+            >
+              <Card style={{ width: "100%", padding: "0px" }}>
+                <Card.Img
+                  style={{ width: "100%", height: "180px" }}
+                  variant="top"
+                  src={c.image || "/placeholder-image.png"}
+                  onError={(e) => {
+                    e.target.onerror = null;
+                    e.target.src = "/placeholder-image.png";
+                  }}
+                />
+                <Card.Body>
+                  <Card.Title>{c.name || "名前未設定"}</Card.Title>
+                  <Card.Text>
+                    {c.age ? `${c.age}歳` : "年齢情報なし"} / 経験:{" "}
+                    {c.experience != null ? `${c.experience}年` : "情報なし"} /
+                    時給: ¥{c.hourlyRate || "情報なし"}
+                    <br />
+                    {c.distance != null
+                      ? `現在地からの距離: ${c.distance.toFixed(2)} km`
+                      : "距離情報なし"}
+                    <br />
+                    {c.available ? "勤務可能" : "現在非対応"}
+                  </Card.Text>
+                  <div
                     style={{
-                      width: "100%",
-                      height: "180px",
+                      display: "flex",
+                      justifyContent: "space-between",
+                      alignItems: "center",
                     }}
-                    variant="top"
-                    src={c.image || "/placeholder-image.png"}
-                    onError={(e) => {
-                      e.target.onerror = null;
-                      e.target.src = "/placeholder-image.png";
-                    }}
-                  />
-                  <Card.Body>
-                    <Card.Title>{c.name || "名前未設定"}</Card.Title>
-                    <Card.Text>
-                      {c.age ? `${c.age}歳` : "年齢情報なし"} / 経験:{" "}
-                      {c.experience != null ? `${c.experience}年` : "情報なし"}{" "}
-                      / 時給: ¥{c.hourlyRate || "情報なし"}
-                      <br />
-                      {distanceFromUser !== null
-                        ? `現在地からの距離: ${distanceFromUser.toFixed(2)} km`
-                        : userLocationLoaded
-                        ? "距離計算不可"
-                        : "現在地を確認中..."}
-                      <br />
-                      {c.available ? "勤務可能" : "現在非対応"}
-                    </Card.Text>
-                    <div
-                      style={{
-                        display: "flex",
-                        justifyContent: "space-between",
-                        alignItems: "center",
-                      }}
-                    >
-                      <HeartButton caregiverId={c.id} />
-                      <Button variant="primary" className="main_button">
-                        予約
-                      </Button>
-                    </div>
-                  </Card.Body>
-                </Card>
-              </Col>
-            );
-          })
+                  >
+                    <HeartButton caregiverId={c.id} />
+                    <Button variant="primary">予約</Button>
+                  </div>
+                </Card.Body>
+              </Card>
+            </Col>
+          ))
         ) : (
           <Col>
             <p>条件に合う介護士が見つかりませんでした。</p>

@@ -1,18 +1,12 @@
-import { useState, useEffect } from "react";
+import { useEffect, useState } from "react";
 import "./App.css";
 import Nav from "react-bootstrap/Nav";
 import { CaregiverList } from "./components/CaregiverList.jsx";
 import MultiSelectDropdown from "./components/MultiSelectDropdown.jsx";
 import { useCurrentLocation } from "./hooks/useCurrentLocation.jsx";
 import { LocationSelect } from "./components/LocationSelect.jsx";
-import { calculateDistance } from "./hooks/geometry";
 
-const CITIES = [
-  { name: "東京都", lat: 35.6895, lng: 139.6917 },
-  { name: "名古屋市", lat: 35.1815, lng: 136.9066 },
-  { name: "大阪市", lat: 34.6937, lng: 135.5023 },
-  { name: "京都市", lat: 35.0116, lng: 135.7681 },
-];
+const CITIES = ["東京都", "名古屋市", "大阪市", "京都市"];
 
 function App() {
   const {
@@ -20,46 +14,24 @@ function App() {
     coords: currentUserCoords,
     isLoaded: userLocationLoaded,
   } = useCurrentLocation();
+
   const [sortValue, setSortValue] = useState("");
   const [selectedGenders, setSelectedGenders] = useState([]);
   const [selectedLanguages, setSelectedLanguages] = useState([]);
-
   const [selectedCityName, setSelectedCityName] = useState("");
-  const [selectedCityCoords, setSelectedCityCoords] = useState(null);
-  const [distanceToSelectedCity, setDistanceToSelectedCity] = useState(null);
+  const [autoSetDone, setAutoSetDone] = useState(false);
 
   useEffect(() => {
-    if (userLocationLoaded && currentUserCity && !selectedCityName) {
+    if (
+      !autoSetDone &&
+      userLocationLoaded &&
+      currentUserCity &&
+      selectedCityName === ""
+    ) {
       setSelectedCityName(currentUserCity);
+      setAutoSetDone(true);
     }
-  }, [userLocationLoaded, currentUserCity]);
-
-  useEffect(() => {
-    if (selectedCityName) {
-      const cityData = CITIES.find((c) => c.name === selectedCityName);
-      if (cityData) {
-        setSelectedCityCoords({ lat: cityData.lat, lng: cityData.lng });
-      } else {
-        setSelectedCityCoords(null);
-      }
-    } else {
-      setSelectedCityCoords(null);
-    }
-  }, [selectedCityName]);
-
-  useEffect(() => {
-    if (currentUserCoords && selectedCityCoords) {
-      const dist = calculateDistance(
-        currentUserCoords.lat,
-        currentUserCoords.lng,
-        selectedCityCoords.lat,
-        selectedCityCoords.lng
-      );
-      setDistanceToSelectedCity(dist);
-    } else {
-      setDistanceToSelectedCity(null);
-    }
-  }, [currentUserCoords, selectedCityCoords]);
+  }, [userLocationLoaded, currentUserCity, selectedCityName, autoSetDone]);
 
   const currentFilters = {
     genders: selectedGenders,
@@ -89,11 +61,12 @@ function App() {
           </Nav.Link>
         </Nav.Item>
       </Nav>
+
       <div className="main_wrapper">
         <LocationSelect
           selectedCity={selectedCityName}
           setSelectedCity={setSelectedCityName}
-          cities={CITIES} // 都市リストを渡す
+          cities={CITIES}
         />
 
         <div className="main_button">
@@ -102,6 +75,7 @@ function App() {
           <button onClick={() => setSortValue("時給順")}>時給順</button>
           <button onClick={() => setSortValue("オンライン")}>オンライン</button>
           <button onClick={() => setSortValue("気に入り")}>気に入り</button>
+
           <MultiSelectDropdown
             title="性別"
             options={[
@@ -111,6 +85,7 @@ function App() {
             selectedValues={selectedGenders}
             onValueChange={setSelectedGenders}
           />
+
           <MultiSelectDropdown
             title="言語"
             options={[
@@ -122,13 +97,15 @@ function App() {
             onValueChange={setSelectedLanguages}
           />
         </div>
+
         <h2>介護士を探す</h2>
+
         <CaregiverList
           sortValue={sortValue}
-          fixedCoords={selectedCityCoords}
           currentFilters={currentFilters}
           userLocationLoaded={userLocationLoaded}
           currentUserCoords={currentUserCoords}
+          selectedCityName={selectedCityName}
         />
       </div>
     </>
