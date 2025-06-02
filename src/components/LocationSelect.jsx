@@ -11,10 +11,10 @@ export function LocationSelect({ selectedCity, setSelectedCity, cities }) {
       value={selectedCity}
       className="main_select"
     >
-      <option value="">地域を選択</option>
+      <option value="">地域を選択</option>{" "}
       {cities.map((c) => (
-        <option key={c.name} value={c.name}>
-          {c.name}
+        <option key={c} value={c}>
+          {c}
         </option>
       ))}
     </select>
