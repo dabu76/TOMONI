@@ -44,7 +44,6 @@ export function CaregiverList({
         setDataLoading(false);
       });
   }, []);
-
   const filteredCaregivers = useMemo(() => {
     let filtered = [...allCaregivers];
 
@@ -183,7 +182,7 @@ export function CaregiverList({
                       alignItems: "center",
                     }}
                   >
-                    <HeartButton caregiverId={c.id} />
+                    <HeartButton caregiverId={c.id} user={user} />
                     <Button variant="primary">予約</Button>
                   </div>
                 </Card.Body>
