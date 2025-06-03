@@ -5,10 +5,22 @@ import { CaregiverList } from "./components/CaregiverList.jsx";
 import MultiSelectDropdown from "./components/MultiSelectDropdown.jsx";
 import { useCurrentLocation } from "./hooks/useCurrentLocation.jsx";
 import { LocationSelect } from "./components/LocationSelect.jsx";
+import { Link } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import {
+  faRightToBracket,
+  faUserPlus,
+} from "@fortawesome/free-solid-svg-icons";
 
 const CITIES = ["東京都", "名古屋市", "大阪市", "京都市"];
 
 function App() {
+  const navigate = useNavigate();
+
+  const handleLoginClick = () => {
+    navigate("/login");
+  };
   const {
     city: currentUserCity,
     coords: currentUserCoords,
@@ -40,9 +52,26 @@ function App() {
 
   return (
     <>
-      <p className="login">ログイン / サインイン</p>
+      <p className="login">
+        <span
+          className="login_btn"
+          onClick={() => navigate("/login")}
+          style={{ cursor: "pointer" }}
+        >
+          <FontAwesomeIcon icon={faRightToBracket} />
+        </span>
+        <span
+          className="member_btn"
+          onClick={() => navigate("/signup")}
+          style={{ cursor: "pointer" }}
+        >
+          <FontAwesomeIcon icon={faUserPlus} />
+        </span>
+      </p>
       <div className="main_header">
-        <h2 className="title">TOMONI</h2>
+        <h2 className="title">
+          <Link to="/">TOMONI</Link>
+        </h2>
       </div>
       <Nav activeKey="1" className="custom-nav">
         <Nav.Item>
@@ -61,7 +90,6 @@ function App() {
           </Nav.Link>
         </Nav.Item>
       </Nav>
-
       <div className="main_wrapper">
         <LocationSelect
           selectedCity={selectedCityName}
