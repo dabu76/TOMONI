@@ -1,7 +1,7 @@
 * {
   box-sizing: border-box;
-  margin: 0 auto;
 }
+
 .main_header {
   width: 140px;
   margin: 0;
@@ -16,8 +16,12 @@ input:focus {
 }
 .custom-nav {
   background-color: #fad4c0;
-  padding: 10px;
-  border-radius: 8px;
+  padding: 10px 20px;
+  border-radius: 10px;
+  display: flex;
+  justify-content: center;
+  gap: 150px;
+  margin: 20px auto;
 }
 
 .custom-nav .nav-link {
@@ -37,6 +41,7 @@ input:focus {
   border-radius: 5px;
 }
 .title {
+  font-size: 40px;
   text-align: left;
   margin-bottom: 30px;
   cursor: pointer;
@@ -45,10 +50,11 @@ input:focus {
   text-decoration: none;
 }
 .login {
-  width: 200px;
+  margin-bottom: 0;
+  margin-right: auto;
+  width: 100%;
   margin-right: 0;
   text-align: right;
-  cursor: pointer;
 }
 .login_btn {
   display: inline-block;
@@ -60,6 +66,11 @@ input:focus {
   text-align: center;
   line-height: 50px;
   margin-right: 10px;
+  transition: all 0.2s ease-in-out;
+}
+.login_btn:hover {
+  background-color: black;
+  color: white;
 }
 
 .member_btn {
@@ -73,6 +84,11 @@ input:focus {
   text-align: center;
   line-height: 50px;
   margin-right: 10px;
+  transition: all 0.2s ease-in-out;
+}
+.member_btn:hover {
+  background-color: white;
+  color: #f6a97a;
 }
 .main_select {
   width: 300px;
@@ -118,7 +134,7 @@ input:focus {
 .main_button button {
   margin: 10px 10px 4% 0px;
   padding: 10px 20px;
-  background-color: #e9d8c3;
+  background-color: #f59a60;
   color: white;
   border: none;
   border-radius: 6px;
@@ -126,7 +142,9 @@ input:focus {
   cursor: pointer;
 }
 .main_button button:hover {
-  background-color: #f59a60;
+  transition: background-color 0.3s ease, color 0.3s ease;
+  background-color: #f8a86d;
+  color: #5c4b3b;
 }
 .heart {
   font-size: 20px;
@@ -144,4 +162,85 @@ input:focus {
 .dropdown {
   display: flex;
   flex-direction: row;
+}
+.caregiver_card {
+  transition: transform 0.2s ease-in-out;
+}
+.caregiver_card:hover {
+  transform: scale(1.02);
+}
+.login_background {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: #e9d8c3;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.login_container {
+  background: #ccc;
+  width: 500px;
+  padding: 40px 30px;
+  border-radius: 10px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  display: flex;
+  flex-direction: column;
+  gap: 25px;
+}
+
+.sign_header {
+  margin-bottom: 20px;
+  font-size: 24px;
+}
+
+.input_group {
+  display: flex;
+  flex-direction: column;
+}
+
+.input_group label {
+  margin-bottom: 8px;
+  font-weight: bold;
+}
+
+.email_confirm {
+  display: flex;
+  gap: 10px;
+}
+
+.email,
+.password,
+.password_confirm {
+  border: none;
+  border-radius: 8px;
+  padding: 15px;
+  width: 100%;
+  font-size: 14px;
+}
+
+.send_verification {
+  color: white;
+  padding: 15px;
+  background-color: #f59a60;
+  border: none;
+  border-radius: 8px;
+  white-space: nowrap;
+}
+
+.signup {
+  margin-top: 30px;
+  padding: 15px;
+  font-size: 16px;
+  background-color: #f59a60;
+  border: none;
+  border-radius: 8px;
+  color: white;
+  cursor: pointer;
+}
+label {
+  text-align: left;
 }

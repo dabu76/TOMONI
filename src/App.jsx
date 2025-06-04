@@ -12,6 +12,7 @@ import {
   faRightToBracket,
   faUserPlus,
 } from "@fortawesome/free-solid-svg-icons";
+import Signup from "./page/Signup.jsx";
 
 const CITIES = ["東京都", "名古屋市", "大阪市", "京都市"];
 
@@ -19,7 +20,7 @@ function App() {
   const navigate = useNavigate();
 
   const handleLoginClick = () => {
-    navigate("/login");
+    navigate("/Signup");
   };
   const {
     city: currentUserCity,
@@ -62,7 +63,7 @@ function App() {
         </span>
         <span
           className="member_btn"
-          onClick={() => navigate("/signup")}
+          onClick={() => navigate("/Signup")}
           style={{ cursor: "pointer" }}
         >
           <FontAwesomeIcon icon={faUserPlus} />

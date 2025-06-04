@@ -152,7 +152,10 @@ export function CaregiverList({
               md={4}
               style={{ marginBottom: "20px" }}
             >
-              <Card style={{ width: "100%", padding: "0px" }}>
+              <Card
+                className="caregiver_card"
+                style={{ width: "100%", padding: "0px" }}
+              >
                 <Card.Img
                   style={{ width: "100%", height: "180px" }}
                   variant="top"
