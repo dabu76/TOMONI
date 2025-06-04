@@ -60,6 +60,11 @@ input:focus {
   text-align: center;
   line-height: 50px;
   margin-right: 10px;
+  transition: all 0.2s ease-in-out;
+}
+.login_btn:hover {
+  background-color: black;
+  color: white;
 }
 
 .member_btn {
@@ -73,6 +78,11 @@ input:focus {
   text-align: center;
   line-height: 50px;
   margin-right: 10px;
+  transition: all 0.2s ease-in-out;
+}
+.member_btn:hover {
+  background-color: white;
+  color: #f6a97a;
 }
 .main_select {
   width: 300px;
@@ -118,7 +128,7 @@ input:focus {
 .main_button button {
   margin: 10px 10px 4% 0px;
   padding: 10px 20px;
-  background-color: #e9d8c3;
+  background-color: #f59a60;
   color: white;
   border: none;
   border-radius: 6px;
@@ -126,7 +136,9 @@ input:focus {
   cursor: pointer;
 }
 .main_button button:hover {
-  background-color: #f59a60;
+  transition: background-color 0.3s ease, color 0.3s ease;
+  background-color: #f8a86d;
+  color: #5c4b3b;
 }
 .heart {
   font-size: 20px;
@@ -144,4 +156,10 @@ input:focus {
 .dropdown {
   display: flex;
   flex-direction: row;
+}
+.caregiver_card {
+  transition: transform 0.2s ease-in-out;
+}
+.caregiver_card:hover {
+  transform: scale(1.02);
 }
