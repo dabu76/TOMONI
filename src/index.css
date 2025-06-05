@@ -182,6 +182,7 @@ input:focus {
 }
 
 .login_container {
+  height: 800px;
   background: #ccc;
   width: 500px;
   padding: 40px 30px;
@@ -243,4 +244,10 @@ input:focus {
 }
 label {
   text-align: left;
+}
+.error {
+  color: red;
+  font-size: 0.9rem;
+  margin-top: 4px;
+  margin-bottom: 12px;
 }
