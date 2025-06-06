@@ -53,8 +53,7 @@ Currently, two official plugins are available:
 メッセージ送信 useState / Firebase（予定） 利用者と介護士の連絡
 日時選択 DatePicker + useState 予約時間の選択と管理
 通知送信 EmailJS / LINE Notify API リマインダー・マッチング通知
-📁 フォルダ構成（予定）
-![image](https://github.com/user-attachments/assets/946b4003-1708-4f68-bcff-e4e60a774bd0)
+
 
 💡 今後の展望（Next Step）
 PWA（プッシュ通知、ホーム追加）対応
