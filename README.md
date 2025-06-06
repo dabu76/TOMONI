@@ -54,30 +54,8 @@ Currently, two official plugins are available:
 日時選択 DatePicker + useState 予約時間の選択と管理
 通知送信 EmailJS / LINE Notify API リマインダー・マッチング通知
 📁 フォルダ構成（予定）
-bash
-/public
-│　├── /img 
-│　├── background.png 
-│　└── caregiverimg.png 
-│　├── /data
-│　├── caregiver_profile.jsonl 
-│　└── patient.json
-/src 
-│　├── /pages 
-│　├── Home.jsx 
-│　├── CaregiverList.jsx
-│　├── CaregiverDetail.jsx 
-│　└── MyPage.jsx
-├── /hooks 
-│ └── useSearch.jsx 
-│ ├── useDetailinformation.jsx
-│ ├── usePagination.jsx 
-│ └── useCurrentLocation.jsx 
-├── /components 
-│ └── CaregiverList.jsx 
-│ ├── heart.jsx 
-│ └── multiselectDropdown.jsx 
-└── App.jsx
+![image](https://github.com/user-attachments/assets/946b4003-1708-4f68-bcff-e4e60a774bd0)
+
 💡 今後の展望（Next Step）
 PWA（プッシュ通知、ホーム追加）対応
 TypeScript によるコード改善・型安全性強化
