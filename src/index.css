@@ -296,3 +296,48 @@ label {
   font-size: 16px;
   color: #666;
 }
+.modal_background {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.5);
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+}
+
+.modal_content {
+  background: white;
+  padding: 30px;
+  border-radius: 8px;
+  min-width: 400px;
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+}
+.login_form {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+.login_input {
+  padding: 8px;
+  border-radius: 8px;
+}
+.login_btn2 {
+  display: flex;
+  flex-direction: row;
+  margin-left: auto;
+  height: 40px;
+  justify-content: center;
+  align-items: center;
+  border-radius: 8px;
+  width: 80px;
+  color: white;
+  border: none;
+  background-color: #f6a97a;
+}
