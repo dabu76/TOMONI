@@ -15,7 +15,14 @@ export function CaregiverList({
   const [allCaregivers, setAllCaregivers] = useState([]);
   const [user, setUser] = useState(null);
   const [dataLoading, setDataLoading] = useState(true);
-
+  // ホバー時に詳細情報を表示する用の状態管理（個別カードごとに）
+  const [hoveredId, setHoveredId] = useState(null);
+  // 介護士カードをリストで表示する（map処理用）
+  const langMap = {
+    japanese: "日本語",
+    english: "英語",
+    korean: "韓国語",
+  };
   useEffect(() => {
     setDataLoading(true);
     Promise.all([
@@ -154,7 +161,11 @@ export function CaregiverList({
             >
               <Card
                 className="caregiver_card"
-                style={{ width: "100%", padding: "0px" }}
+                style={{ width: "100%", padding: "0px", position: "relative" }}
+                // ホバーしたときに該当のc.idを記録
+                onMouseEnter={() => setHoveredId(c.id)}
+                // ホバーが外れたらIDをリセット
+                onMouseLeave={() => setHoveredId(null)}
               >
                 <Card.Img
                   style={{ width: "100%", height: "180px" }}
@@ -189,6 +200,26 @@ export function CaregiverList({
                     <Button variant="primary">予約</Button>
                   </div>
                 </Card.Body>
+
+                {/* hoveredIdとc.idが一致する場合のみ詳細情報を表示 */}
+                {hoveredId === c.id && (
+                  <div className="card_hover_detail">
+                    <p>プロフィール: {c.profile}</p>
+                    <p>
+                      言語: {c.languages?.map((l) => langMap[l]).join(" / ")}
+                    </p>
+                    <p>スケジュール:</p>
+                    <ul style={{ paddingLeft: "20px" }}>
+                      {c.schedule?.map((s, i) => (
+                        <li key={i}>
+                          {s.date} {s.time} - {s.user}
+                        </li>
+                      ))}
+                    </ul>
+                    <HeartButton caregiverId={c.id} user={user} />
+                    <Button variant="primary">予約</Button>
+                  </div>
+                )}
               </Card>
             </Col>
           ))

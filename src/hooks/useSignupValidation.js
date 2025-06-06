@@ -10,39 +10,59 @@ export function useSignupValidation() {
   // 各入力項目のエラーメッセージを管理
   const [errors, setErrors] = useState({});
 
-  // フィールドごとのバリデーション（onBlur時に使用）
-  const validateField = (field) => {
+  // 共通バリデーションロジック（単項目または全体チェックに使用）
+  const validateField = (fieldName, value = null) => {
     const newErrors = { ...errors };
 
-    if (field === "email") {
-      if (!email.includes("@") || !email.includes(".")) {
-        newErrors.email = "有効なメールアドレスを入力してください";
-      } else {
-        delete newErrors.email;
-      }
-    }
+    const fieldValue = {
+      email,
+      password,
+      passwordConfirm,
+      ...(value && { [fieldName]: value }),
+    };
 
-    if (field === "password") {
-      if (password.length < 6) {
-        newErrors.password = "パスワードは6文字以上で入力してください";
-      } else {
-        delete newErrors.password;
-      }
-    }
+    switch (fieldName) {
+      case "email":
+        if (
+          !fieldValue.email.includes("@") ||
+          !fieldValue.email.includes(".")
+        ) {
+          newErrors.email = "有効なメールアドレスを入力してください";
+        } else {
+          delete newErrors.email;
+        }
+        break;
 
-    if (field === "passwordConfirm") {
-      if (password !== passwordConfirm) {
-        newErrors.passwordConfirm = "パスワードが一致しません";
-      } else {
-        delete newErrors.passwordConfirm;
-      }
+      case "password":
+        if (fieldValue.password.length < 6) {
+          newErrors.password = "パスワードは6文字以上で入力してください";
+        } else {
+          delete newErrors.password;
+        }
+        break;
+
+      case "passwordConfirm":
+        if (fieldValue.password !== fieldValue.passwordConfirm) {
+          newErrors.passwordConfirm = "パスワードが一致しません";
+        } else {
+          delete newErrors.passwordConfirm;
+        }
+        break;
+
+      default:
+        break;
     }
 
     setErrors(newErrors);
   };
 
-  // フォーム全体のバリデーション（送信時に使用）
+  // 全体バリデーション（送信時）
   const validate = () => {
+    validateField("email");
+    validateField("password");
+    validateField("passwordConfirm");
+
+    // // 非同期のため、最新の状態を直接使ってチェックする
     const newErrors = {};
 
     if (!email.includes("@") || !email.includes(".")) {
@@ -61,7 +81,7 @@ export function useSignupValidation() {
     return Object.keys(newErrors).length === 0;
   };
 
-  // 外部から使うための値と関数を返す
+  // 外部に返す値と関数
   return {
     email,
     setEmail,
@@ -71,6 +91,6 @@ export function useSignupValidation() {
     setPasswordConfirm,
     errors,
     validate,
-    validateField, // 単項目バリデーション用
+    validateField,
   };
 }

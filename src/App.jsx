@@ -13,6 +13,7 @@ import {
   faUserPlus,
 } from "@fortawesome/free-solid-svg-icons";
 import Signup from "./page/Signup.jsx";
+import LoginModal from "./components/LoginModal";
 
 const CITIES = ["東京都", "名古屋市", "大阪市", "京都市"];
 
@@ -33,7 +34,8 @@ function App() {
   const [selectedLanguages, setSelectedLanguages] = useState([]);
   const [selectedCityName, setSelectedCityName] = useState("");
   const [autoSetDone, setAutoSetDone] = useState(false);
-
+  // ログインモーダル表示用の状態
+  const [showLoginModal, setShowLoginModal] = useState(false);
   useEffect(() => {
     if (
       !autoSetDone &&
@@ -54,11 +56,7 @@ function App() {
   return (
     <>
       <p className="login">
-        <span
-          className="login_btn"
-          onClick={() => navigate("/login")}
-          style={{ cursor: "pointer" }}
-        >
+        <span className="login_btn" onClick={() => setShowLoginModal(true)}>
           <FontAwesomeIcon icon={faRightToBracket} />
         </span>
         <span
@@ -69,6 +67,29 @@ function App() {
           <FontAwesomeIcon icon={faUserPlus} />
         </span>
       </p>
+      {/*// ログインボタンを押すとモーダルを表示
+       */}
+      {showLoginModal && (
+        <LoginModal onClose={() => setShowLoginModal(false)}>
+          <form className="login_form">
+            <h2>ログイン</h2>
+            <input
+              className="login_input"
+              type="text"
+              placeholder="メールアドレス"
+            />
+            <input
+              className="login_input"
+              type="password"
+              placeholder="パスワード"
+            />
+            <button className="login_btn2" type="submit">
+              ログイン
+            </button>
+          </form>
+        </LoginModal>
+      )}
+
       <div className="main_header">
         <h2 className="title">
           <Link to="/">TOMONI</Link>
@@ -127,7 +148,7 @@ function App() {
           />
         </div>
 
-        <h2>介護士を探す</h2>
+        <h2 className="h2_class">介護士を探す</h2>
 
         <CaregiverList
           sortValue={sortValue}
