@@ -148,7 +148,7 @@ function App() {
           />
         </div>
 
-        <h2>介護士を探す</h2>
+        <h2 className="h2_class">介護士を探す</h2>
 
         <CaregiverList
           sortValue={sortValue}
