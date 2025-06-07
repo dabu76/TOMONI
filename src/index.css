@@ -349,3 +349,32 @@ label {
   border: none;
   background-color: #f6a97a;
 }
+/* 全体レイアウトの枠を定義し、グリッドで2列表示 */
+.container2 {
+  position: relative;
+  border: 1px #ccc solid;
+  height: 600px;
+  margin-top: 100px;
+  display: grid;
+  justify-content: center;
+  grid-template-columns: 1fr 1fr;
+}
+
+/* 介護士の画像部分に上側マージンを追加（中央寄せ調整用） */
+.caregiver_picture {
+  margin-top: 150px;
+}
+
+/* 「予約する」ボタンを画面下中央に固定表示 */
+.reservation {
+  position: fixed;
+  bottom: 30px;
+  left: 50%;
+  transform: translateX(-50%);
+  border: none;
+  border-radius: 8px;
+  background-color: #f6a97a;
+  padding: 20px 40px;
+  cursor: pointer;
+  z-index: 1000;
+}

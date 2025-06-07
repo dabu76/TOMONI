@@ -18,7 +18,7 @@ createRoot(document.getElementById("root")).render(
           <Route index element={<App />} />
           <Route path="Signup" element={<Signup />} />
           <Route path="detail/:id" element={<CaregiverDetail />} />
-        </Route>{" "}
+        </Route>
       </Routes>
     </BrowserRouter>
   </React.StrictMode>
