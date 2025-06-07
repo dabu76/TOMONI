@@ -4,6 +4,7 @@ import { Container, Row, Col, Card, Button } from "react-bootstrap";
 import { HeartButton } from "./Heart.jsx";
 import { usePagination } from "../hooks/usePagination.jsx";
 import { calculateDistance } from "../hooks/geometry";
+import { useNavigate } from "react-router-dom";
 
 export function CaregiverList({
   currentFilters,
@@ -22,6 +23,10 @@ export function CaregiverList({
     japanese: "日本語",
     english: "英語",
     korean: "韓国語",
+  };
+  const navigate = useNavigate();
+  const handleCardClick = (caregiverId) => {
+    navigate(`/detail/${caregiverId}`);
   };
   // ハート同期化するための変数
   const [likedIds, setLikedIds] = useState(new Set());
@@ -187,6 +192,7 @@ export function CaregiverList({
                 onMouseEnter={() => setHoveredId(c.id)}
                 // ホバーが外れたらIDをリセット
                 onMouseLeave={() => setHoveredId(null)}
+                onClick={() => handleCardClick(c.id)}
               >
                 <Card.Img
                   style={{ width: "100%", height: "180px" }}
@@ -217,8 +223,7 @@ export function CaregiverList({
                       alignItems: "center",
                     }}
                   >
-                    {/*お気に入りボタン（ハート）コンポーネントユーザーが他の介護士を
-                    「お気に入り」に追加・削除するためのUI */}
+                    {/*お気に入りボタン（ハート）コンポーネントユーザーが他の介護士を「お気に入り」に追加・削除するためのUI */}
                     <HeartButton
                       caregiverId={c.id}
                       liked={likedIds.has(c.id)}
