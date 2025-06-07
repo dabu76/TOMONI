@@ -1,32 +1,18 @@
-import { useEffect, useState } from "react";
-// お気に入りボタン（ハート）コンポーネント
-export function HeartButton({ caregiverId, user }) {
-  // ハートの状態管理（true: お気に入り済み）
-  const [liked, setLiked] = useState(false);
-  // ユーザーが以前にお気に入りしていた場合、初期表示でハートを赤にする
-  useEffect(() => {
-    if (user.favorite.includes(caregiverId)) {
-      setLiked(true);
-    }
-  }, [user, caregiverId]);
+/**
+ * [変更履歴]
+ * 以前は HeartButton 内で liked 状態を useState によりローカル管理していたが、
+ * 同じ ID のハートが複数存在する場合に状態が同期されない問題が発生。
+ *
+ * → 状態を上位コンポーネント（CaregiverList）で一元管理し、
+ *    props（liked, onToggle）を通じて制御する構造にリファクタリング。
+ *
+ * これにより、同じ ID を持つハートが複数あっても
+ * 一括で同期され、UI 一貫性が保たれるようになった。
+ */
 
-  // ハートのカウント（将来的な機能拡張用）
-  const [count, setCount] = useState(0);
-  // ハートをクリックした時の処理
-  const toggleLike = () => {
-    setCount(liked ? count - 1 : count + 1);
-    setLiked(!liked);
-    // ユーザーのお気に入りリストに含まれていれば削除、なければ追加
-    if (user.favorite.includes(caregiverId)) {
-      user.favorite = user.favorite.filter((num) => num !== caregiverId);
-    } else {
-      user.favorite.push(caregiverId);
-    }
-    console.log(user.favorite);
-  };
-  // UI：ハートアイコン（状態に応じて切り替え）
+export function HeartButton({ caregiverId, liked, onToggle }) {
   return (
-    <button className="heart" onClick={toggleLike}>
+    <button className="heart" onClick={() => onToggle(caregiverId)}>
       {liked ? "❤️" : "🤍"}
     </button>
   );
