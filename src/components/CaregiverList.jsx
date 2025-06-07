@@ -23,6 +23,21 @@ export function CaregiverList({
     english: "英語",
     korean: "韓国語",
   };
+  // ハート同期化するための変数
+  const [likedIds, setLikedIds] = useState(new Set());
+  const toggleLike = (caregiverId) => {
+    const updatedSet = new Set(likedIds);
+    if (updatedSet.has(caregiverId)) {
+      updatedSet.delete(caregiverId);
+    } else {
+      updatedSet.add(caregiverId);
+    }
+    setLikedIds(updatedSet);
+
+    // user.favorite も更新（必要ならバックエンドにも送信）
+    user.favorite = [...updatedSet];
+  };
+
   useEffect(() => {
     setDataLoading(true);
     Promise.all([
@@ -51,6 +66,12 @@ export function CaregiverList({
         setDataLoading(false);
       });
   }, []);
+  // user情報が読み込まれたら、お気に入りIDをSetに変換して保存
+  useEffect(() => {
+    if (user && Array.isArray(user.favorite)) {
+      setLikedIds(new Set(user.favorite));
+    }
+  }, [user]);
   const filteredCaregivers = useMemo(() => {
     let filtered = [...allCaregivers];
 
@@ -196,7 +217,13 @@ export function CaregiverList({
                       alignItems: "center",
                     }}
                   >
-                    <HeartButton caregiverId={c.id} user={user} />
+                    {/*お気に入りボタン（ハート）コンポーネントユーザーが他の介護士を
+                    「お気に入り」に追加・削除するためのUI */}
+                    <HeartButton
+                      caregiverId={c.id}
+                      liked={likedIds.has(c.id)}
+                      onToggle={toggleLike}
+                    />
                     <Button variant="primary">予約</Button>
                   </div>
                 </Card.Body>
@@ -216,7 +243,11 @@ export function CaregiverList({
                         </li>
                       ))}
                     </ul>
-                    <HeartButton caregiverId={c.id} user={user} />
+                    <HeartButton
+                      caregiverId={c.id}
+                      liked={likedIds.has(c.id)}
+                      onToggle={toggleLike}
+                    />
                     <Button variant="primary">予約</Button>
                   </div>
                 )}
