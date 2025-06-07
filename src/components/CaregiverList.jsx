@@ -25,8 +25,8 @@ export function CaregiverList({
     korean: "韓国語",
   };
   const navigate = useNavigate();
-  const handleCardClick = (caregiverId) => {
-    navigate(`/detail/${caregiverId}`);
+  const handleCardClick = (caregiver) => {
+    navigate(`/detail/${caregiver.id}`, { state: { caregiver } });
   };
   // ハート同期化するための変数
   const [likedIds, setLikedIds] = useState(new Set());
@@ -192,7 +192,7 @@ export function CaregiverList({
                 onMouseEnter={() => setHoveredId(c.id)}
                 // ホバーが外れたらIDをリセット
                 onMouseLeave={() => setHoveredId(null)}
-                onClick={() => handleCardClick(c.id)}
+                onClick={() => handleCardClick(c)}
               >
                 <Card.Img
                   style={{ width: "100%", height: "180px" }}
