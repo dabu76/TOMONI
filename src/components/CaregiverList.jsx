@@ -244,7 +244,7 @@ export function CaregiverList({
                     <ul style={{ paddingLeft: "20px" }}>
                       {c.schedule?.map((s, i) => (
                         <li key={i}>
-                          {s.date} {s.time} - {s.user}
+                          {s.date} {s.time}
                         </li>
                       ))}
                     </ul>
@@ -253,7 +253,12 @@ export function CaregiverList({
                       liked={likedIds.has(c.id)}
                       onToggle={toggleLike}
                     />
-                    <Button variant="primary">予約</Button>
+                    <Button
+                      onClick={(e) => e.stopPropagation()} // 親要素へのイベント伝播を防止
+                      variant="primary"
+                    >
+                      予約
+                    </Button>
                   </div>
                 )}
               </Card>

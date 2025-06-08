@@ -359,12 +359,34 @@ label {
   justify-content: center;
   grid-template-columns: 1fr 1fr;
 }
-
+.caregiver_name {
+  margin-top: 20px;
+}
 /* 介護士の画像部分に上側マージンを追加（中央寄せ調整用） */
 .caregiver_picture {
-  margin-top: 150px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  border-right: 1px #ccc solid;
 }
-
+/* 介護士の紹介テキスト全体のスタイル */
+.content_introduce {
+  margin-top: 60px;
+}
+/* 自己紹介文の各段落のスタイル */
+.content_introduce p {
+  margin-bottom: 30px;
+}
+/* 予約カレンダー表示部分のスタイル */
+.content_calender {
+  border-top: 1px #ccc solid;
+  padding-top: 50px;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
+}
 /* 「予約する」ボタンを画面下中央に固定表示 */
 .reservation {
   position: fixed;

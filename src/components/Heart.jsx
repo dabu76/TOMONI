@@ -12,7 +12,13 @@
 
 export function HeartButton({ caregiverId, liked, onToggle }) {
   return (
-    <button className="heart" onClick={() => onToggle(caregiverId)}>
+    <button
+      className="heart"
+      onClick={(e) => {
+        e.stopPropagation(); //eventBubbling
+        onToggle(caregiverId);
+      }}
+    >
       {liked ? "❤️" : "🤍"}
     </button>
   );
