@@ -16,20 +16,22 @@ export default function CaregiverDetail() {
       <div className="container2">
         {/* 介護士の写真表示 */}
         <div className="caregiver_picture">
-          <img src={caregiver.image || "/placeholder-image.png"} alt="사진" />
+          <img src={caregiver.image || "/placeholder-image.png"} />
+          <h2 className="caregiver_name">{caregiver.name}</h2>
         </div>
 
         {/* 詳細情報（言語、紹介文、カレンダー） */}
         <div className="content">
-          <div className="content_language">
-            対応言語: {caregiver.languages?.join(" / ") || "情報なし"}
+          <div className="content_right">
+            <div className="content_introduce">
+              <p> 対応言語: {caregiver.languages?.join(" / ") || "情報なし"}</p>
+              <p>自己紹介: {caregiver.profile || "紹介文なし"}</p>
+            </div>
+            <div className="content_calender">
+              {/* カレンダーに対応可能な日程を渡す */}
+              <Calender scheduleDates={caregiver.schedule.map((s) => s.date)} />
+            </div>
           </div>
-          <div className="content_introduce">
-            自己紹介: {caregiver.profile || "紹介文なし"}
-          </div>
-
-          {/* カレンダーに対応可能な日程を渡す */}
-          <Calender scheduleDates={caregiver.schedule.map((s) => s.date)} />
         </div>
       </div>
 

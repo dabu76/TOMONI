@@ -244,7 +244,7 @@ export function CaregiverList({
                     <ul style={{ paddingLeft: "20px" }}>
                       {c.schedule?.map((s, i) => (
                         <li key={i}>
-                          {s.date} {s.time} - {s.user}
+                          {s.date} {s.time}
                         </li>
                       ))}
                     </ul>
