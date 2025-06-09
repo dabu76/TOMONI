@@ -351,6 +351,10 @@ label {
 }
 /* 全体レイアウトの枠を定義し、グリッドで2列表示 */
 .container2 {
+  border: none;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.3);
+
+  background: #f59a60;
   position: relative;
   border: 1px #ccc solid;
   height: 600px;
