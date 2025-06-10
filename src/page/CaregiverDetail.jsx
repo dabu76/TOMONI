@@ -1,3 +1,7 @@
+import { useLocation, useNavigate } from "react-router-dom";
+import { useState } from "react";
+import Calender from "../components/Calender";
+
 export default function CaregiverDetail() {
   // location経由で、選択された介護士のデータを取得
   const location = useLocation();
@@ -11,8 +15,10 @@ export default function CaregiverDetail() {
     return <p>介護士の情報が見つかりませんでした。</p>;
   }
 
+  // 「予約する」ボタンをクリックしたときの処理
   const handleReserveClick = () => {
     if (selectedDate) {
+      // ユーザーが選択した日付を「YYYY-MM-DD」形式の文字列に変換（ローカル時間基準）
       const y = selectedDate.getFullYear();
       const m = selectedDate.getMonth() + 1;
       const d = selectedDate.getDate();
@@ -21,6 +27,8 @@ export default function CaregiverDetail() {
       ).padStart(2, "0")}`;
 
       console.log("Detailで補正された日付:", formatted);
+
+      // Reserveページへ画面遷移し、介護士情報と選択日付をstate経由で渡す
       navigate(`/Reserve/${caregiver.id}`, {
         state: {
           caregiver,
