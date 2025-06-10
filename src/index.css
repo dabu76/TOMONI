@@ -353,7 +353,6 @@ label {
 .container2 {
   border: none;
   box-shadow: 0 4px 16px rgba(0, 0, 0, 0.3);
-
   background: #f59a60;
   position: relative;
   border: 1px #ccc solid;
@@ -403,4 +402,15 @@ label {
   padding: 20px 40px;
   cursor: pointer;
   z-index: 1000;
+}
+.reserve_page {
+  background-color: #f6a97a;
+  border-radius: 8px;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.3);
+  height: 700px;
+  border: 1px #ccc solid;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin: 50px;
 }
