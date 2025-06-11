@@ -4,18 +4,9 @@ import { useState } from "react";
 import { ja } from "date-fns/locale";
 
 // 介護士のスケジュールをカレンダーで可視化するコンポーネント
-export default function Calender({ scheduleDates, onDateChange, initialDate }) {
-  const [value, setValue] = useState(() => {
-    if (initialDate instanceof Date) return initialDate;
+export default function Calender({ scheduleDates, onDateChange, selectRange }) {
+  const [value, setValue] = useState(selectRange ? [null, null] : new Date());
 
-    if (typeof initialDate === "string") {
-      const [y, m, d] = initialDate.split("-").map(Number);
-      return new Date(y, m - 1, d);
-    }
-
-    return new Date();
-  });
-  // 選択された日付を親コンポーネントに渡す
   const handleChange = (newDate) => {
     setValue(newDate);
     onDateChange(newDate);
@@ -26,11 +17,19 @@ export default function Calender({ scheduleDates, onDateChange, initialDate }) {
         locale="ja"
         onChange={handleChange}
         value={value}
+        selectRange={selectRange}
         tileDisabled={({ date }) => {
+          //今日の日数
+          const today = new Date();
+          today.setHours(0, 0, 0, 0);
+
           // 表示日を yyyy-mm-dd 形式に変換
           const formatted = date.toISOString().split("T")[0];
+          //昨日までの日はを計算
+          const isBeforeToday = date < today;
+          const isNotScheduled = scheduleDates.includes(formatted);
           // スケジュールに含まれていない日は選択不可に
-          return scheduleDates.includes(formatted);
+          return isBeforeToday || isNotScheduled;
         }}
       />
     </div>
