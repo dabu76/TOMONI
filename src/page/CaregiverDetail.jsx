@@ -6,7 +6,7 @@ export default function CaregiverDetail() {
   // location経由で、選択された介護士のデータを取得
   const location = useLocation();
   const navigate = useNavigate();
-  const [selectedDate, setSelectedDate] = useState(null);
+  const [selectedRange, setSelectedRange] = useState([null, null]);
 
   const caregiver = location.state?.caregiver;
 
@@ -17,27 +17,41 @@ export default function CaregiverDetail() {
 
   // 「予約する」ボタンをクリックしたときの処理
   const handleReserveClick = () => {
-    if (selectedDate) {
-      // ユーザーが選択した日付を「YYYY-MM-DD」形式の文字列に変換（ローカル時間基準）
-      const y = selectedDate.getFullYear();
-      const m = selectedDate.getMonth() + 1;
-      const d = selectedDate.getDate();
-      const formatted = `${y}-${String(m).padStart(2, "0")}-${String(
-        d
-      ).padStart(2, "0")}`;
+    const format = (date) =>
+      `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(
+        2,
+        "0"
+      )}-${String(date.getDate()).padStart(2, "0")}`;
 
-      console.log("Detailで補正された日付:", formatted);
-
-      // Reserveページへ画面遷移し、介護士情報と選択日付をstate経由で渡す
+    if (selectedRange[0] && selectedRange[1]) {
+      //日付の2つとも選択された場合→期間予約
       navigate(`/Reserve/${caregiver.id}`, {
         state: {
           caregiver,
-          date: formatted,
+          startDate: format(selectedRange[0]),
+          endDate: format(selectedRange[1]),
+        },
+      });
+    } else if (selectedRange[0]) {
+      //日付1つだけ選択された場合 → 単一予約
+
+      const formatted = format(selectedRange[0]);
+      navigate(`/Reserve/${caregiver.id}`, {
+        state: {
+          caregiver,
+          startDate: formatted,
+          endDate: formatted,
+        },
+      });
+    } else {
+      //日付を選択していない場合 → そのまま進む
+      navigate(`/Reserve/${caregiver.id}`, {
+        state: {
+          caregiver,
         },
       });
     }
   };
-
   return (
     <>
       <div className="container2">
@@ -57,8 +71,9 @@ export default function CaregiverDetail() {
             <div className="content_calender">
               {/* カレンダー：予約可能な日付を渡す */}
               <Calender
+                selectRange={true}
                 scheduleDates={caregiver.schedule.map((s) => s.date)}
-                onDateChange={setSelectedDate}
+                onDateChange={setSelectedRange}
               />
             </div>
           </div>
