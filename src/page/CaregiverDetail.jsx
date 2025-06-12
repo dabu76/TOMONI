@@ -1,5 +1,5 @@
 import { useLocation, useNavigate } from "react-router-dom";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import Calender from "../components/Calender";
 
 export default function CaregiverDetail() {
@@ -9,7 +9,6 @@ export default function CaregiverDetail() {
   const [selectedRange, setSelectedRange] = useState([null, null]);
 
   const caregiver = location.state?.caregiver;
-
   // データが存在しない場合のエラーメッセージ表示
   if (!caregiver) {
     return <p>介護士の情報が見つかりませんでした。</p>;
@@ -40,7 +39,6 @@ export default function CaregiverDetail() {
         state: {
           caregiver,
           startDate: formatted,
-          endDate: formatted,
         },
       });
     } else {
@@ -81,7 +79,11 @@ export default function CaregiverDetail() {
       </div>
 
       {/* 画面下中央に固定された「予約する」ボタン */}
-      <button className="reservation" onClick={handleReserveClick}>
+      <button
+        className="reservation"
+        onClick={handleReserveClick}
+        disabled={!selectedRange[0]}
+      >
         予約する
       </button>
     </>
