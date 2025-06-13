@@ -4,12 +4,19 @@ import { useState } from "react";
 import { ja } from "date-fns/locale";
 
 // 介護士のスケジュールをカレンダーで可視化するコンポーネント
-export default function Calender({ scheduleDates, onDateChange, selectRange }) {
-  const [value, setValue] = useState(selectRange ? [null, null] : new Date());
-
+export default function Calender({
+  scheduleDates,
+  onDateChange,
+  setIsReserve,
+}) {
+  const [value, setValue] = useState([null, null]);
   const handleChange = (newDate) => {
     setValue(newDate);
     onDateChange(newDate);
+    setIsReserve(true);
+  };
+  const handleReserve = () => {
+    setIsReserve(false);
   };
   return (
     <div>
@@ -17,7 +24,8 @@ export default function Calender({ scheduleDates, onDateChange, selectRange }) {
         locale="ja"
         onChange={handleChange}
         value={value}
-        selectRange={selectRange}
+        onClickDay={handleReserve}
+        selectRange={true}
         tileDisabled={({ date }) => {
           //今日の日数
           const today = new Date();
