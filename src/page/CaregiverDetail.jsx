@@ -7,7 +7,7 @@ export default function CaregiverDetail() {
   const location = useLocation();
   const navigate = useNavigate();
   const [selectedRange, setSelectedRange] = useState([null, null]);
-
+  const [isReserve, setIsReserve] = useState(true);
   const caregiver = location.state?.caregiver;
   // データが存在しない場合のエラーメッセージ表示
   if (!caregiver) {
@@ -69,9 +69,9 @@ export default function CaregiverDetail() {
             <div className="content_calender">
               {/* カレンダー：予約可能な日付を渡す */}
               <Calender
-                selectRange={true}
                 scheduleDates={caregiver.schedule.map((s) => s.date)}
                 onDateChange={setSelectedRange}
+                setIsReserve={setIsReserve}
               />
             </div>
           </div>
@@ -82,7 +82,7 @@ export default function CaregiverDetail() {
       <button
         className="reservation"
         onClick={handleReserveClick}
-        disabled={!selectedRange[0]}
+        disabled={!isReserve}
       >
         予約する
       </button>
