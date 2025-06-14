@@ -89,10 +89,41 @@ export default function Reserve() {
           locale="ja"
           selectRange={true}
           value={selectedRange}
-          onChange={setSelectedRange}
+          onChange={(range) => {
+            if (!Array.isArray(range) || range.length !== 2) {
+              setSelectedRange(range);
+              return;
+            }
+
+            const [start, end] = range;
+            const oneDay = 1000 * 60 * 60 * 24;
+            let current = new Date(start);
+            const reservedDates = caregiver.schedule.map((s) => s.date);
+
+            let overlapFound = false;
+            while (current <= end) {
+              const formatted = current.toISOString().split("T")[0];
+              if (reservedDates.includes(formatted)) {
+                overlapFound = true;
+                break;
+              }
+              current = new Date(current.getTime() + oneDay);
+            }
+
+            if (overlapFound) {
+              alert("選択範囲に既に予約されている日があります。");
+              setSelectedRange([null, null]);
+            } else {
+              setSelectedRange(range);
+            }
+          }}
           tileDisabled={({ date }) => {
             const formatted = date.toISOString().split("T")[0];
-            return caregiver.schedule.map((s) => s.date).includes(formatted);
+            const isPast = date < new Date().setHours(0, 0, 0, 0);
+            const isReserved = caregiver.schedule
+              .map((s) => s.date)
+              .includes(formatted);
+            return isPast || isReserved;
           }}
         />
       </div>
