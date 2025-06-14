@@ -9,6 +9,11 @@ export default function CaregiverDetail() {
   const [selectedRange, setSelectedRange] = useState([null, null]);
   const [isReserve, setIsReserve] = useState(true);
   const caregiver = location.state?.caregiver;
+  const [message, setMessage] = useState("");
+  //日を最初日だけ選択した場合のメッセージ出力
+  useEffect(() => {
+    setMessage(isReserve ? "" : "終了日を指定してください。");
+  }, [isReserve]);
   // データが存在しない場合のエラーメッセージ表示
   if (!caregiver) {
     return <p>介護士の情報が見つかりませんでした。</p>;
@@ -66,8 +71,12 @@ export default function CaregiverDetail() {
               <p>対応言語: {caregiver.languages?.join(" / ") || "情報なし"}</p>
               <p>自己紹介: {caregiver.profile || "紹介文なし"}</p>
             </div>
+
             <div className="content_calender">
               {/* カレンダー：予約可能な日付を渡す */}
+              <div>
+                <h4 className="alert_message">{message}</h4>
+              </div>
               <Calender
                 scheduleDates={caregiver.schedule.map((s) => s.date)}
                 onDateChange={setSelectedRange}
