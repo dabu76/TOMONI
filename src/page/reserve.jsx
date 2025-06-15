@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { useParams, useLocation } from "react-router-dom";
 import Calendar from "react-calendar";
 import "react-calendar/dist/Calendar.css";
+import { useNavigate } from "react-router-dom";
 export default function Reserve() {
   const { id } = useParams();
   const location = useLocation();
@@ -13,6 +14,7 @@ export default function Reserve() {
     if (!startDate || !endDate) return [null, null];
     return [new Date(startDate), new Date(endDate)];
   });
+  const navigate = useNavigate();
   //時給計算
   useEffect(() => {
     if (
@@ -22,26 +24,28 @@ export default function Reserve() {
       selectedRange[0] &&
       selectedRange[1]
     ) {
+      // 開始日時を生成（選択された日付＋入力された時刻）
       const [startH, startM] = beforetime.split(":").map(Number);
+      const startDateTime = new Date(selectedRange[0]);
+      startDateTime.setHours(startH, startM, 0, 0);
+
+      // 終了日時を生成（選択された日付＋入力された時刻）
       const [endH, endM] = aftertime.split(":").map(Number);
+      const endDateTime = new Date(selectedRange[1]);
+      endDateTime.setHours(endH, endM, 0, 0);
 
-      const startMinutes = startH * 60 + startM;
-      const endMinutes = endH * 60 + endM;
-      const diffHours = (endMinutes - startMinutes) / 60;
-
-      if (diffHours <= 0) {
-        alert("終了時刻は開始時刻より後にしてください。");
+      // 終了が開始よりも前の場合、アラートを出して入力をリセット
+      if (endDateTime <= startDateTime) {
+        alert("終了時刻は開始より後にしてください。");
         setAfterTime("");
         setResult(0);
         return;
       }
 
-      // 日数を計算
-      const oneDay = 1000 * 60 * 60 * 24;
-      const diffDays =
-        Math.ceil((selectedRange[1] - selectedRange[0]) / oneDay) + 1;
+      const diffMs = endDateTime - startDateTime;
+      const diffHours = diffMs / (1000 * 60 * 60);
 
-      const total = diffDays * diffHours * caregiver.hourlyRate;
+      const total = Math.round(diffHours * caregiver.hourlyRate);
       setResult(total);
     }
   }, [beforetime, aftertime, caregiver, selectedRange]);
@@ -62,17 +66,19 @@ export default function Reserve() {
     } else {
       alert(`${caregiver.name} さんで ${start} 〜 ${end} に予約されました！`);
     }
+    navigate("/reserve");
   };
   return (
     <div className="reserve_page">
       <h2>予約ページ</h2>
       <div className="reserve_time">
+        <div>開始時間</div>
         <input
           type="time"
           onChange={(e) => setBeforeTime(e.target.value)}
           className="reserve_time_now"
         />
-        ~
+        <div>終了時間</div>
         <input
           type="time"
           value={aftertime}
