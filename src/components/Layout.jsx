@@ -8,12 +8,11 @@ import {
   faRightToBracket,
   faUserPlus,
 } from "@fortawesome/free-solid-svg-icons";
-import { useState } from "react";
+import { createContext, useState } from "react";
 
 export default function Layout() {
   const [showLoginModal, setShowLoginModal] = useState(false);
   const navigate = useNavigate();
-
   return (
     <>
       <p className="login">

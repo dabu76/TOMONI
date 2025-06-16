@@ -14,6 +14,13 @@ export default function Reserve() {
     if (!startDate || !endDate) return [null, null];
     return [new Date(startDate), new Date(endDate)];
   });
+  const matchingRequest = {
+    id: 0,
+    clientId: 123,
+    caregiverId: caregiver.id,
+    message: memo,
+    status: "pending",
+  };
   const navigate = useNavigate();
   //時給計算
   useEffect(() => {
@@ -57,6 +64,10 @@ export default function Reserve() {
       alert("日付を選択してください。");
       return;
     }
+    if (!beforetime || !aftertime) {
+      alert("時間を選択してください。");
+      return;
+    }
 
     const start = format(selectedRange[0]);
     const end = selectedRange[1] ? format(selectedRange[1]) : start;
@@ -66,7 +77,13 @@ export default function Reserve() {
     } else {
       alert(`${caregiver.name} さんで ${start} 〜 ${end} に予約されました！`);
     }
-    navigate("/reserve");
+    navigate("/ReservationComplete", {
+      state: {
+        caregiverName: caregiver.name,
+        dateRange: selectedRange,
+        total: result,
+      },
+    });
   };
   return (
     <div className="reserve_page">
@@ -138,6 +155,15 @@ export default function Reserve() {
             return isPast || isReserved;
           }}
         />
+        {/*お願いもの入れる */}
+        <div className="reserve_memo_area">
+          <h5>特記事項・希望など（任意）</h5>
+          <input
+            className="reserve_memo"
+            type="text"
+            placeholder="例)アレルギーがあります"
+          />
+        </div>
       </div>
       {/* 予約確定ボタン */}
       <button className="reserve_Btn" onClick={handleReserve}>

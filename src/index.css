@@ -411,7 +411,7 @@ label {
   background-color: #f6a97a;
   border-radius: 8px;
   box-shadow: 0 4px 16px rgba(0, 0, 0, 0.3);
-  height: 700px;
+  height: 900px;
   border: 1px #ccc solid;
   display: flex;
   flex-direction: column;
@@ -419,10 +419,10 @@ label {
   margin: 50px;
 }
 .reserve_page h2 {
-  margin: 40px;
+  margin: 20px;
 }
 .reserve_time {
-  margin-bottom: 20px;
+  margin-bottom: 10px;
   display: flex;
 }
 .reserve_time_now {
@@ -432,9 +432,33 @@ label {
   margin-left: 20px;
 }
 .reserve_Btn {
-  margin: 30px;
+  margin: 20px;
   padding: 20px;
   border-radius: 8px;
   border: none;
   background-color: #f59a60;
+}
+.reserve_memo_area h5 {
+  margin-top: 20px;
+}
+.reserve_memo {
+  border-radius: 8px;
+  margin-top: 20px;
+  padding: 83px;
+}
+.check_title {
+  justify-content: center;
+  align-items: center;
+}
+.reservation_Container {
+  border: none;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.3);
+  background: #f59a60;
+  border: 1px #ccc solid;
+  height: 600px;
+  margin-top: 100px;
+  justify-content: center;
+}
+.reservation_Container h2 {
+  margin: 30px;
 }
