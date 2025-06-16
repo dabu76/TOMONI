@@ -1,10 +1,11 @@
-import { useEffect, useState, useMemo } from "react";
+import { useEffect, useState, useMemo, useContext } from "react";
 import axios from "axios";
 import { Container, Row, Col, Card, Button } from "react-bootstrap";
 import { HeartButton } from "./Heart.jsx";
 import { usePagination } from "../hooks/usePagination.jsx";
 import { calculateDistance } from "../hooks/geometry";
 import { useNavigate } from "react-router-dom";
+import { UserContext } from "../context/UserContext";
 
 export function CaregiverList({
   currentFilters,
@@ -14,7 +15,8 @@ export function CaregiverList({
   selectedCityName,
 }) {
   const [allCaregivers, setAllCaregivers] = useState([]);
-  const [user, setUser] = useState(null);
+  const { user, setUser } = useContext(UserContext);
+
   const [dataLoading, setDataLoading] = useState(true);
   // ホバー時に詳細情報を表示する用の状態管理（個別カードごとに）
   const [hoveredId, setHoveredId] = useState(null);
@@ -40,29 +42,29 @@ export function CaregiverList({
     setLikedIds(updatedSet);
 
     // user.favorite も更新（必要ならバックエンドにも送信）
-    user.favorite = [...updatedSet];
+    if (user && setUser) {
+      setUser({ ...user, favorite: [...updatedSet] });
+    }
   };
 
   useEffect(() => {
     setDataLoading(true);
-    Promise.all([
-      axios.get("/data/caregiver_profiles.jsonl"),
-      axios.get("/data/user_profile.json"),
-    ])
-      .then(([caregiversRes, userRes]) => {
+
+    axios
+      .get("/data/caregiver_profiles.jsonl")
+      .then((caregiversRes) => {
         const lines = caregiversRes.data.split("\n").filter(Boolean);
         const parsedCaregivers = lines
           .map((line, index) => {
             try {
               return JSON.parse(line);
             } catch (err) {
-              console.error(`Line ${index + 1} JSON パシフィックエラー:`, err);
+              console.error(`Line ${index + 1} JSON パースエラー:`, err);
               return null;
             }
           })
           .filter(Boolean);
         setAllCaregivers(parsedCaregivers);
-        setUser(userRes.data);
       })
       .catch((err) => {
         console.error("データエラー:", err);
@@ -254,7 +256,12 @@ export function CaregiverList({
                       onToggle={toggleLike}
                     />
                     <Button
-                      onClick={(e) => e.stopPropagation()} // 親要素へのイベント伝播を防止
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        navigate(`/detail/${c.id}`, {
+                          state: { caregiver: c },
+                        });
+                      }}
                       variant="primary"
                     >
                       予約
