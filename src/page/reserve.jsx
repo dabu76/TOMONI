@@ -72,19 +72,25 @@ export default function Reserve() {
     <div className="reserve_page">
       <h2>予約ページ</h2>
       <div className="reserve_time">
-        <div>開始時間</div>
-        <input
-          type="time"
-          onChange={(e) => setBeforeTime(e.target.value)}
-          className="reserve_time_now"
-        />
-        <div>終了時間</div>
-        <input
-          type="time"
-          value={aftertime}
-          onChange={(e) => setAfterTime(e.target.value)}
-          className="reserve_time_after"
-        />
+        <div>
+          <div>終了時間</div>
+          <input
+            type="time"
+            onChange={(e) => setBeforeTime(e.target.value)}
+            className="reserve_time_now"
+          />
+        </div>
+
+        <div>
+          <div>終了時間</div>
+          ~
+          <input
+            type="time"
+            value={aftertime}
+            onChange={(e) => setAfterTime(e.target.value)}
+            className="reserve_time_after"
+          />
+        </div>
       </div>
       <p>合計金額: ¥{result}</p>
 
@@ -134,7 +140,9 @@ export default function Reserve() {
         />
       </div>
       {/* 予約確定ボタン */}
-      <button onClick={handleReserve}>予約を確定する</button>
+      <button className="reserve_Btn" onClick={handleReserve}>
+        予約を確定する
+      </button>
     </div>
   );
 }

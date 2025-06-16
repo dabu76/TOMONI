@@ -418,6 +418,23 @@ label {
   align-items: center;
   margin: 50px;
 }
+.reserve_page h2 {
+  margin: 40px;
+}
 .reserve_time {
+  margin-bottom: 20px;
   display: flex;
+}
+.reserve_time_now {
+  margin-right: 20px;
+}
+.reserve_time_after {
+  margin-left: 20px;
+}
+.reserve_Btn {
+  margin: 30px;
+  padding: 20px;
+  border-radius: 8px;
+  border: none;
+  background-color: #f59a60;
 }
