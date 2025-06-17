@@ -57,7 +57,7 @@ export default function Layout() {
 
       <Nav activeKey="1" className="custom-nav">
         <Nav.Item>
-          <Nav.Link eventKey="1" href="#/search">
+          <Nav.Link eventKey="1" href="/">
             介護士を探す
           </Nav.Link>
         </Nav.Item>

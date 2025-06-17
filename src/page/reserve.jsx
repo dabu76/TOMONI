@@ -1,8 +1,9 @@
-import { useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import { useParams, useLocation } from "react-router-dom";
 import Calendar from "react-calendar";
 import "react-calendar/dist/Calendar.css";
 import { useNavigate } from "react-router-dom";
+import { UserContext } from "../context/UserContext";
 export default function Reserve() {
   const { id } = useParams();
   const location = useLocation();
@@ -10,17 +11,31 @@ export default function Reserve() {
   let [beforetime, setBeforeTime] = useState("");
   let [aftertime, setAfterTime] = useState("");
   let [result, setResult] = useState(0);
+  const { user, setUser } = useContext(UserContext);
+  const [startDateTime, setStartDateTime] = useState(null);
+  const [endDateTime, setEndDateTime] = useState(null);
   const [selectedRange, setSelectedRange] = useState(() => {
     if (!startDate || !endDate) return [null, null];
     return [new Date(startDate), new Date(endDate)];
   });
-  const matchingRequest = {
-    id: 0,
-    clientId: 123,
-    caregiverId: caregiver.id,
-    message: memo,
-    status: "pending",
-  };
+  //介護士に頼むことがある場合
+  const [additionalRequest, setAdditionalRequest] = useState(""); // 부탁사항
+
+  //利用者の基本情報
+  const [matchingRequest, setMatchingRequest] = useState(null);
+  //利用者の頼む情報
+  useEffect(() => {
+    if (user && caregiver) {
+      setMatchingRequest({
+        id: 0,
+        clientId: user.id,
+        caregiverId: caregiver.id,
+        message: user.notes,
+        additionalRequest,
+        status: "pending",
+      });
+    }
+  }, [user, caregiver, additionalRequest]);
   const navigate = useNavigate();
   //時給計算
   useEffect(() => {
@@ -33,13 +48,15 @@ export default function Reserve() {
     ) {
       // 開始日時を生成（選択された日付＋入力された時刻）
       const [startH, startM] = beforetime.split(":").map(Number);
-      const startDateTime = new Date(selectedRange[0]);
-      startDateTime.setHours(startH, startM, 0, 0);
+      const start = new Date(selectedRange[0]);
+      start.setHours(startH, startM, 0, 0);
+      setStartDateTime(start);
 
       // 終了日時を生成（選択された日付＋入力された時刻）
       const [endH, endM] = aftertime.split(":").map(Number);
-      const endDateTime = new Date(selectedRange[1]);
-      endDateTime.setHours(endH, endM, 0, 0);
+      const end = new Date(selectedRange[1]);
+      end.setHours(endH, endM, 0, 0);
+      setEndDateTime(end);
 
       // 終了が開始よりも前の場合、アラートを出して入力をリセット
       if (endDateTime <= startDateTime) {
@@ -77,11 +94,15 @@ export default function Reserve() {
     } else {
       alert(`${caregiver.name} さんで ${start} 〜 ${end} に予約されました！`);
     }
+    //予約完了ページに移動する
     navigate("/ReservationComplete", {
       state: {
         caregiverName: caregiver.name,
         dateRange: selectedRange,
         total: result,
+        matchingRequest: matchingRequest,
+        startDateTime: startDateTime.toISOString(),
+        endDateTime: endDateTime.toISOString(),
       },
     });
   };
@@ -161,7 +182,9 @@ export default function Reserve() {
           <input
             className="reserve_memo"
             type="text"
-            placeholder="例)アレルギーがあります"
+            placeholder="例)ペットにアレルギー"
+            value={additionalRequest}
+            onChange={(e) => setAdditionalRequest(e.target.value)}
           />
         </div>
       </div>
