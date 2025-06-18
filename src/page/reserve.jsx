@@ -50,25 +50,21 @@ export default function Reserve() {
       const [startH, startM] = beforetime.split(":").map(Number);
       const start = new Date(selectedRange[0]);
       start.setHours(startH, startM, 0, 0);
-      setStartDateTime(start);
 
       // 終了日時を生成（選択された日付＋入力された時刻）
       const [endH, endM] = aftertime.split(":").map(Number);
       const end = new Date(selectedRange[1]);
       end.setHours(endH, endM, 0, 0);
-      setEndDateTime(end);
 
       // 終了が開始よりも前の場合、アラートを出して入力をリセット
-      if (endDateTime <= startDateTime) {
+      if (end <= start) {
         alert("終了時刻は開始より後にしてください。");
         setAfterTime("");
         setResult(0);
         return;
       }
-
-      const diffMs = endDateTime - startDateTime;
+      const diffMs = end - start;
       const diffHours = diffMs / (1000 * 60 * 60);
-
       const total = Math.round(diffHours * caregiver.hourlyRate);
       setResult(total);
     }
@@ -86,13 +82,25 @@ export default function Reserve() {
       return;
     }
 
-    const start = format(selectedRange[0]);
-    const end = selectedRange[1] ? format(selectedRange[1]) : start;
+    const [startH, startM] = beforetime.split(":").map(Number);
+    const [endH, endM] = aftertime.split(":").map(Number);
+    const start = new Date(selectedRange[0]);
+    start.setHours(startH, startM, 0, 0);
+
+    const end = new Date(selectedRange[1]);
+    end.setHours(endH, endM, 0, 0);
+
+    const dateTextStart = format(selectedRange[0]);
+    const dateTextEnd = selectedRange[1]
+      ? format(selectedRange[1])
+      : dateTextStart;
 
     if (start === end) {
-      alert(`${caregiver.name} さんで ${start} に予約されました！`);
+      alert(`${caregiver.name} さんで ${dateTextStart} に予約されました！`);
     } else {
-      alert(`${caregiver.name} さんで ${start} 〜 ${end} に予約されました！`);
+      alert(
+        `${caregiver.name} さんで ${dateTextStart} 〜 ${dateTextEnd} に予約されました！`
+      );
     }
     //予約完了ページに移動する
     navigate("/ReservationComplete", {
@@ -101,8 +109,8 @@ export default function Reserve() {
         dateRange: selectedRange,
         total: result,
         matchingRequest: matchingRequest,
-        startDateTime: startDateTime.toISOString(),
-        endDateTime: endDateTime.toISOString(),
+        startDateTime: start.toISOString(),
+        endDateTime: end.toISOString(),
       },
     });
   };
