@@ -14,6 +14,9 @@ export default function Reserve() {
   const { user, setUser } = useContext(UserContext);
   const [startDateTime, setStartDateTime] = useState(null);
   const [endDateTime, setEndDateTime] = useState(null);
+  const [errorMessage, setErrorMessage] = useState("");
+  const isReserveDisabled = !beforetime || !aftertime;
+
   const [selectedRange, setSelectedRange] = useState(() => {
     if (!startDate || !endDate) return [null, null];
     return [new Date(startDate), new Date(endDate)];
@@ -74,13 +77,15 @@ export default function Reserve() {
     const format = (date) => date.toISOString().split("T")[0];
 
     if (!selectedRange[0]) {
-      alert("日付を選択してください。");
+      setErrorMessage("日付を選択してください。");
       return;
     }
     if (!beforetime || !aftertime) {
-      alert("時間を選択してください。");
+      setErrorMessage("時間を選択してください。");
       return;
     }
+
+    setErrorMessage("");
 
     const [startH, startM] = beforetime.split(":").map(Number);
     const [endH, endM] = aftertime.split(":").map(Number);
@@ -117,6 +122,9 @@ export default function Reserve() {
   return (
     <div className="reserve_page">
       <h2>予約ページ</h2>
+      {(!beforetime || !aftertime) && (
+        <p className="error_message">時間を選択してください。</p>
+      )}
       <div className="reserve_time">
         <div>
           <div>終了時間</div>
@@ -197,7 +205,11 @@ export default function Reserve() {
         </div>
       </div>
       {/* 予約確定ボタン */}
-      <button className="reserve_Btn" onClick={handleReserve}>
+      <button
+        className="reserve_Btn"
+        onClick={handleReserve}
+        disabled={isReserveDisabled}
+      >
         予約を確定する
       </button>
     </div>

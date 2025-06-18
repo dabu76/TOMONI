@@ -470,3 +470,6 @@ label {
   border-radius: 8px;
   background-color: #f6a97a;
 }
+.error_message {
+  color: red;
+}
