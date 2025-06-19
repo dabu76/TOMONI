@@ -8,6 +8,7 @@ import Layout from "./components/Layout";
 import Reserve from "./page/Reserve";
 import ReservationComplete from "./page/ReservationComplete .jsx";
 import { UserProvider } from "./context/UserContext";
+import History from "./page/History";
 import "./style/custom.scss";
 
 import App from "./App.jsx";
@@ -29,6 +30,7 @@ createRoot(document.getElementById("root")).render(
               path="ReservationComplete"
               element={<ReservationComplete></ReservationComplete>}
             />
+            <Route path="History" element={<History></History>} />
           </Route>
         </Routes>
       </BrowserRouter>

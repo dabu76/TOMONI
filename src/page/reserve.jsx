@@ -14,12 +14,15 @@ export default function Reserve() {
   const { user, setUser } = useContext(UserContext);
   const [startDateTime, setStartDateTime] = useState(null);
   const [endDateTime, setEndDateTime] = useState(null);
+  const [errorMessage, setErrorMessage] = useState("");
+  const isReserveDisabled = !beforetime || !aftertime;
+
   const [selectedRange, setSelectedRange] = useState(() => {
     if (!startDate || !endDate) return [null, null];
     return [new Date(startDate), new Date(endDate)];
   });
   //介護士に頼むことがある場合
-  const [additionalRequest, setAdditionalRequest] = useState(""); // 부탁사항
+  const [additionalRequest, setAdditionalRequest] = useState("");
 
   //利用者の基本情報
   const [matchingRequest, setMatchingRequest] = useState(null);
@@ -50,25 +53,21 @@ export default function Reserve() {
       const [startH, startM] = beforetime.split(":").map(Number);
       const start = new Date(selectedRange[0]);
       start.setHours(startH, startM, 0, 0);
-      setStartDateTime(start);
 
       // 終了日時を生成（選択された日付＋入力された時刻）
       const [endH, endM] = aftertime.split(":").map(Number);
       const end = new Date(selectedRange[1]);
       end.setHours(endH, endM, 0, 0);
-      setEndDateTime(end);
 
       // 終了が開始よりも前の場合、アラートを出して入力をリセット
-      if (endDateTime <= startDateTime) {
+      if (end <= start) {
         alert("終了時刻は開始より後にしてください。");
         setAfterTime("");
         setResult(0);
         return;
       }
-
-      const diffMs = endDateTime - startDateTime;
+      const diffMs = end - start;
       const diffHours = diffMs / (1000 * 60 * 60);
-
       const total = Math.round(diffHours * caregiver.hourlyRate);
       setResult(total);
     }
@@ -78,21 +77,35 @@ export default function Reserve() {
     const format = (date) => date.toISOString().split("T")[0];
 
     if (!selectedRange[0]) {
-      alert("日付を選択してください。");
+      setErrorMessage("日付を選択してください。");
       return;
     }
     if (!beforetime || !aftertime) {
-      alert("時間を選択してください。");
+      setErrorMessage("時間を選択してください。");
       return;
     }
 
-    const start = format(selectedRange[0]);
-    const end = selectedRange[1] ? format(selectedRange[1]) : start;
+    setErrorMessage("");
+
+    const [startH, startM] = beforetime.split(":").map(Number);
+    const [endH, endM] = aftertime.split(":").map(Number);
+    const start = new Date(selectedRange[0]);
+    start.setHours(startH, startM, 0, 0);
+
+    const end = new Date(selectedRange[1]);
+    end.setHours(endH, endM, 0, 0);
+
+    const dateTextStart = format(selectedRange[0]);
+    const dateTextEnd = selectedRange[1]
+      ? format(selectedRange[1])
+      : dateTextStart;
 
     if (start === end) {
-      alert(`${caregiver.name} さんで ${start} に予約されました！`);
+      alert(`${caregiver.name} さんで ${dateTextStart} に予約されました！`);
     } else {
-      alert(`${caregiver.name} さんで ${start} 〜 ${end} に予約されました！`);
+      alert(
+        `${caregiver.name} さんで ${dateTextStart} 〜 ${dateTextEnd} に予約されました！`
+      );
     }
     //予約完了ページに移動する
     navigate("/ReservationComplete", {
@@ -101,14 +114,17 @@ export default function Reserve() {
         dateRange: selectedRange,
         total: result,
         matchingRequest: matchingRequest,
-        startDateTime: startDateTime.toISOString(),
-        endDateTime: endDateTime.toISOString(),
+        startDateTime: start.toISOString(),
+        endDateTime: end.toISOString(),
       },
     });
   };
   return (
     <div className="reserve_page">
       <h2>予約ページ</h2>
+      {(!beforetime || !aftertime) && (
+        <p className="error_message">時間を選択してください。</p>
+      )}
       <div className="reserve_time">
         <div>
           <div>終了時間</div>
@@ -189,7 +205,11 @@ export default function Reserve() {
         </div>
       </div>
       {/* 予約確定ボタン */}
-      <button className="reserve_Btn" onClick={handleReserve}>
+      <button
+        className="reserve_Btn"
+        onClick={handleReserve}
+        disabled={isReserveDisabled}
+      >
         予約を確定する
       </button>
     </div>

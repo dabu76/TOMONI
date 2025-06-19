@@ -62,12 +62,12 @@ export default function Layout() {
           </Nav.Link>
         </Nav.Item>
         <Nav.Item>
-          <Nav.Link eventKey="2" href="#/history">
+          <Nav.Link eventKey="2" href="/history">
             依頼履歴
           </Nav.Link>
         </Nav.Item>
         <Nav.Item>
-          <Nav.Link eventKey="3" href="#/mypage">
+          <Nav.Link eventKey="3" href="/mypage">
             アカウント
           </Nav.Link>
         </Nav.Item>

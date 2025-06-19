@@ -7,5 +7,58 @@
   "disease": "Diabetes",
   "medicines": [{ "name": "medicines", "time": "10:30", "alarm": true }],
   "favorite": [1, 5, 6, 56],
-  "notes": "10時半にはお薬を飲まなければならない"
+  "notes": "10時半にはお薬を飲まなければならない",
+  "reservations": [
+    {
+      "caregiverId": 103,
+      "caregiverName": "鈴木 一郎",
+      "startDateTime": "2025-06-19T10:00:00.000Z",
+      "endDateTime": "2025-06-20T12:00:00.000Z",
+      "total": 8000,
+      "status": "confirmed",
+      "message": "玄関前で呼び出し希望",
+      "additionalRequest": "高齢者対応経験ありの方"
+    },
+    {
+      "caregiverId": 104,
+      "caregiverName": "田中 美咲",
+      "startDateTime": "2025-06-20T13:00:00.000Z",
+      "endDateTime": "2025-06-20T15:00:00.000Z",
+      "total": 7000,
+      "status": "pending",
+      "message": "できれば玄関前で対応希望",
+      "additionalRequest": "動物が苦手です"
+    },
+
+    {
+      "caregiverId": 101,
+      "caregiverName": "山田 太郎",
+      "startDateTime": "2025-06-10T09:00:00.000Z",
+      "endDateTime": "2025-06-10T11:00:00.000Z",
+      "total": 6000,
+      "status": "completed",
+      "message": "ペットに注意",
+      "additionalRequest": "猫アレルギー"
+    },
+    {
+      "caregiverId": 102,
+      "caregiverName": "佐藤 花子",
+      "startDateTime": "2025-06-15T14:00:00.000Z",
+      "endDateTime": "2025-06-15T16:00:00.000Z",
+      "total": 7000,
+      "status": "cancelled",
+      "message": "急な用事でキャンセルしました",
+      "additionalRequest": "香水は控えてください"
+    },
+    {
+      "caregiverId": 103,
+      "caregiverName": "鈴木 一郎",
+      "startDateTime": "2025-06-18T10:00:00.000Z",
+      "endDateTime": "2025-06-18T12:00:00.000Z",
+      "total": 8000,
+      "status": "completed",
+      "message": "玄関前で呼び出し希望",
+      "additionalRequest": "高齢者対応経験ありの方"
+    }
+  ]
 }
