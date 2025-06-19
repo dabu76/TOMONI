@@ -22,7 +22,7 @@ export default function Reserve() {
     return [new Date(startDate), new Date(endDate)];
   });
   //介護士に頼むことがある場合
-  const [additionalRequest, setAdditionalRequest] = useState(""); // 부탁사항
+  const [additionalRequest, setAdditionalRequest] = useState("");
 
   //利用者の基本情報
   const [matchingRequest, setMatchingRequest] = useState(null);

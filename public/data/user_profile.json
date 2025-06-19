@@ -10,12 +10,33 @@
   "notes": "10時半にはお薬を飲まなければならない",
   "reservations": [
     {
+      "caregiverId": 103,
+      "caregiverName": "鈴木 一郎",
+      "startDateTime": "2025-06-19T10:00:00.000Z",
+      "endDateTime": "2025-06-20T12:00:00.000Z",
+      "total": 8000,
+      "status": "confirmed",
+      "message": "玄関前で呼び出し希望",
+      "additionalRequest": "高齢者対応経験ありの方"
+    },
+    {
+      "caregiverId": 104,
+      "caregiverName": "田中 美咲",
+      "startDateTime": "2025-06-20T13:00:00.000Z",
+      "endDateTime": "2025-06-20T15:00:00.000Z",
+      "total": 7000,
+      "status": "pending",
+      "message": "できれば玄関前で対応希望",
+      "additionalRequest": "動物が苦手です"
+    },
+
+    {
       "caregiverId": 101,
       "caregiverName": "山田 太郎",
       "startDateTime": "2025-06-10T09:00:00.000Z",
       "endDateTime": "2025-06-10T11:00:00.000Z",
       "total": 6000,
-      "status": "confirmed",
+      "status": "completed",
       "message": "ペットに注意",
       "additionalRequest": "猫アレルギー"
     },
@@ -35,7 +56,7 @@
       "startDateTime": "2025-06-18T10:00:00.000Z",
       "endDateTime": "2025-06-18T12:00:00.000Z",
       "total": 8000,
-      "status": "confirmed",
+      "status": "completed",
       "message": "玄関前で呼び出し希望",
       "additionalRequest": "高齢者対応経験ありの方"
     }
