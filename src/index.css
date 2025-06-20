@@ -473,3 +473,40 @@ label {
 .error_message {
   color: red;
 }
+.history_container {
+  border: none;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.3);
+  background: #f59a60;
+  border: 1px #ccc solid;
+  height: 600px;
+  margin-top: 100px;
+  justify-content: center;
+}
+.history_container h2 {
+  margin-top: 20px;
+}
+.future_reserve,
+.today_reserve,
+.past_reserve {
+  margin-top: 30px;
+}
+.reserve_list:hover {
+  scale: 1.1;
+}
+.reserve_list {
+  display: flex;
+  background-color: #f8a86d;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  width: 300px;
+  margin: auto;
+  margin-top: 10px;
+  border: none;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.3);
+  cursor: pointer;
+  transition: all 0.3s ease-in-out;
+}
+.reserve_list p {
+  margin: 5px;
+}
