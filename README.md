@@ -1,8 +1,3 @@
-<<<<<<< HEAD
-【2025 年 6 月〜現在】
-個人開発中のポートフォリオアプリの保守・改善作業
-
-- TypeScript 導入準備、コード整備、テスト設計の試行 など
 
 TOMONI
 介護サービスサイト
@@ -58,8 +53,8 @@ Currently, two official plugins are available:
 メッセージ送信 useState / Firebase（予定） 利用者と介護士の連絡
 日時選択 DatePicker + useState 予約時間の選択と管理
 通知送信 EmailJS / LINE Notify API リマインダー・マッチング通知
-📁 フォルダ構成（予定）
-bash /public ├── /img │ ├── background.png │ └── caregiverimg.png ├── /data │ ├── caregiver_profile.jsonl └── └── patient.json /src ├── /pages │ ├── Home.jsx │ ├── CaregiverList.jsx │ ├── CaregiverDetail.jsx │ └── MyPage.jsx ├── /hooks │ └── useSearch.jsx │ ├── useDetailinformation.jsx │ ├── usePagination.jsx │ └── useCurrentLocation.jsx ├── /components │ └── CaregiverList.jsx │ ├── heart.jsx │ └── multiselectDropdown.jsx └── App.jsx
+
+
 💡 今後の展望（Next Step）
 PWA（プッシュ通知、ホーム追加）対応
 TypeScript によるコード改善・型安全性強化
