@@ -1,3 +1,4 @@
+
 TOMONI
 介護サービスサイト
 
@@ -64,29 +65,34 @@ TypeScript によるコード改善・型安全性強化
 📎 詳細ドキュメント（Notion）
 👉 企画書・画面設計・トラブルログはこちら
 
-※ 上記リンクから、開発経緯・画面設計・機能仕様などの詳細をご確認いただけます。
-=======
+# ※ 上記リンクから、開発経緯・画面設計・機能仕様などの詳細をご確認いただけます。
+
 # TOMONI
+
 介護サービスサイト
+
 # 🧑‍⚕️ ケアマッチングプラットフォーム（MVP）
+
 # React + Vite
 
 高齢化社会を背景に、介護者（ケアギバー）と家族・利用者をマッチングする  
-**C to C 型の介護マッチングサービス**のフロントエンドMVPプロジェクトです。
+**C to C 型の介護マッチングサービス**のフロントエンド MVP プロジェクトです。
 This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
 
 ---
+
 Currently, two official plugins are available:
 
 ## ✅ 想定技術スタック（MVP）
+
 - [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) for Fast Refresh
 - [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
 
-- **フロントエンド**：React + Vite + React Router  
-- **状態管理**：useState / Context API（必要に応じて）  
-- **データ取得**：axios による JSON ローカルフェッチ  
-- **スタイリング**：reactbootstrap CSS  
-- **使用予定API**：Google Maps API / Notification API / EmailJS など  
+- **フロントエンド**：React + Vite + React Router
+- **状態管理**：useState / Context API（必要に応じて）
+- **データ取得**：axios による JSON ローカルフェッチ
+- **スタイリング**：reactbootstrap CSS
+- **使用予定 API**：Google Maps API / Notification API / EmailJS など
 
 ---
 
@@ -96,7 +102,7 @@ Currently, two official plugins are available:
 本プロジェクトは、急な予定により介護ができない場合でも、  
 **短期間でも対応可能な介護士を迅速にマッチング**できる仕組みを提供します。
 
-また、長期的な介護ニーズにも対応し、**企業を通さないC to C型プラットフォーム**として、  
+また、長期的な介護ニーズにも対応し、**企業を通さない C to C 型プラットフォーム**として、  
 より柔軟で信頼できる介護支援を目指します。
 
 ---
@@ -112,7 +118,7 @@ Currently, two official plugins are available:
 
 ### 👩‍⚕️ 介護士向け
 
-- プロフィール登録・PR編集
+- プロフィール登録・PR 編集
 - 依頼の受信・承認 / 拒否
 - 患者情報の事前確認（既往歴・薬情報など）
 
@@ -123,16 +129,16 @@ Currently, two official plugins are available:
 
 ---
 
-## ✍️ 使用予定API（MVP）
+## ✍️ 使用予定 API（MVP）
 
-| 機能         | 使用API・方法                           | 目的                             |
-|--------------|----------------------------------------|----------------------------------|
-| 地図表示     | Google Maps API / Leaflet              | 介護士の現在地・距離の可視化         |
-| 現在位置取得 | `navigator.geolocation`                | 近くの介護士を探すため             |
-| 時間通知     | `setInterval` / Notification API       | 服薬時間を知らせるアラート機能       |
-| メッセージ送信 | useState / Firebase（予定）            | 利用者と介護士の連絡                 |
-| 日時選択     | DatePicker + useState                  | 予約時間の選択と管理                 |
-| 通知送信     | EmailJS / LINE Notify API             | リマインダー・マッチング通知         |
+| 機能           | 使用 API・方法                   | 目的                           |
+| -------------- | -------------------------------- | ------------------------------ |
+| 地図表示       | Google Maps API / Leaflet        | 介護士の現在地・距離の可視化   |
+| 現在位置取得   | `navigator.geolocation`          | 近くの介護士を探すため         |
+| 時間通知       | `setInterval` / Notification API | 服薬時間を知らせるアラート機能 |
+| メッセージ送信 | useState / Firebase（予定）      | 利用者と介護士の連絡           |
+| 日時選択       | DatePicker + useState            | 予約時間の選択と管理           |
+| 通知送信       | EmailJS / LINE Notify API        | リマインダー・マッチング通知   |
 
 ---
 
@@ -141,39 +147,40 @@ Currently, two official plugins are available:
 bash
 /public
 ├── /img
-│   ├── background.png
-│   └── caregiverimg.png
+│ ├── background.png
+│ └── caregiverimg.png
 ├── /data
-│   ├── caregiver_profile.jsonl
+│ ├── caregiver_profile.jsonl
 └── └── patient.json
 /src
 ├── /pages
-│   ├── Home.jsx
-│   ├── CaregiverList.jsx
-│   ├── CaregiverDetail.jsx
-│   └── MyPage.jsx
+│ ├── Home.jsx
+│ ├── CaregiverList.jsx
+│ ├── CaregiverDetail.jsx
+│ └── MyPage.jsx
 ├── /hooks
-│   └── useSearch.jsx
-│   ├── useDetailinformation.jsx
-│   ├── usePagination.jsx
-│   └── useCurrentLocation.jsx
+│ └── useSearch.jsx
+│ ├── useDetailinformation.jsx
+│ ├── usePagination.jsx
+│ └── useCurrentLocation.jsx
 ├── /components
-│   └── CaregiverList.jsx
-│   ├── heart.jsx
-│   └── multiselectDropdown.jsx
+│ └── CaregiverList.jsx
+│ ├── heart.jsx
+│ └── multiselectDropdown.jsx
 └── App.jsx
+
 ---
 
 ## 💡 今後の展望（Next Step）
 
 - PWA（プッシュ通知、ホーム追加）対応
-- TypeScriptによるコード改善・型安全性強化
+- TypeScript によるコード改善・型安全性強化
 
 ---
 
 ## 📌 補足
 
-このリポジトリはフロントエンド主体で、**モックデータを使用したUX重視のMVP構成**です。  
+このリポジトリはフロントエンド主体で、**モックデータを使用した UX 重視の MVP 構成**です。  
 今後はバックエンド連携・決済機能などの拡張も視野に入れて開発を進める予定です。
 
 ## 📎 詳細ドキュメント（Notion）
@@ -181,7 +188,9 @@ bash
 👉 [企画書・画面設計・トラブルログはこちら](https://www.notion.so/1fde8d9ebbc480af8da6cb41c5983786)
 
 ※ 上記リンクから、開発経緯・画面設計・機能仕様などの詳細をご確認いただけます。
+
 ## Expanding the ESLint configuration
 
 If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and [`typescript-eslint`](https://typescript-eslint.io) in your project.
->>>>>>> main
+
+> > > > > > > main

@@ -39,32 +39,45 @@ export default function History() {
       <div className="today_reserve">
         今日の予約内容
         <div className="reserve_list">
-          <p>
-            {formatDateTime(todayReservations[0].startDateTime)}~
-            {formatDateTime(todayReservations[0].endDateTime)}
-          </p>
+          {todayReservations.length > 0 ? (
+            <p>
+              {formatDateTime(todayReservations[0].startDateTime)}~
+              {formatDateTime(todayReservations[0].endDateTime)}
+            </p>
+          ) : (
+            <p>本日の予約はありません。</p>
+          )}
         </div>
       </div>
-
       <div className="future_reserve">
         今後の予約予定
-        {futureReservations.map((f, i) => (
-          <div className="reserve_list">
-            <p key={i}>
-              {formatDateTime(f.startDateTime)}~{formatDateTime(f.endDateTime)}
-            </p>
-          </div>
-        ))}
+        {futureReservations.length > 0 ? (
+          futureReservations.slice(0, 5).map((f, i) => (
+            <div className="reserve_list" key={i}>
+              <p>
+                {formatDateTime(f.startDateTime)}~
+                {formatDateTime(f.endDateTime)}
+              </p>
+            </div>
+          ))
+        ) : (
+          <p>今後の予約はありません。</p>
+        )}
       </div>
       <div className="past_reserve">
         過去の予約履歴
-        {pastReservations.map((p, i) => (
-          <div className="reserve_list">
-            <p key={i}>
-              {formatDateTime(p.startDateTime)}~{formatDateTime(p.endDateTime)}
-            </p>
-          </div>
-        ))}
+        {pastReservations.length > 0 ? (
+          pastReservations.slice(0, 5).map((p, i) => (
+            <div className="reserve_list" key={i}>
+              <p>
+                {formatDateTime(p.startDateTime)}~
+                {formatDateTime(p.endDateTime)}
+              </p>
+            </div>
+          ))
+        ) : (
+          <p>過去の予約履歴はありません。</p>
+        )}
       </div>
     </div>
   );
