@@ -7,7 +7,7 @@ import { LocationSelect } from "./components/LocationSelect.jsx";
 import { useNavigate } from "react-router-dom";
 
 const CITIES = ["東京都", "名古屋市", "大阪市", "京都市"];
-
+const API_BASE = "http://localhost:5238/api";
 function App() {
   const navigate = useNavigate();
 
