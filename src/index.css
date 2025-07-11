@@ -486,11 +486,13 @@ label {
   margin-top: 20px;
 }
 .future_reserve,
-.today_reserve,
 .past_reserve {
   margin-top: 30px;
 }
-.reserve_list:hover {
+.today {
+  padding: 40px;
+}
+.pointer:hover {
   scale: 1.1;
 }
 .reserve_list {
@@ -504,9 +506,11 @@ label {
   margin-top: 10px;
   border: none;
   box-shadow: 0 4px 16px rgba(0, 0, 0, 0.3);
-  cursor: pointer;
-  transition: all 0.3s ease-in-out;
 }
 .reserve_list p {
   margin: 5px;
+}
+.pointer {
+  cursor: pointer;
+  transition: all 0.3s ease-in-out;
 }

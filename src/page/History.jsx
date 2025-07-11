@@ -38,9 +38,9 @@ export default function History() {
       <h2>予約履歴ページ</h2>
       <div className="today_reserve">
         今日の予約内容
-        <div className="reserve_list">
+        <div className="reserve_list today">
           {todayReservations.length > 0 ? (
-            <p>
+            <p className="pointer">
               {formatDateTime(todayReservations[0].startDateTime)}~
               {formatDateTime(todayReservations[0].endDateTime)}
             </p>
@@ -54,7 +54,7 @@ export default function History() {
         {futureReservations.length > 0 ? (
           futureReservations.slice(0, 5).map((f, i) => (
             <div className="reserve_list" key={i}>
-              <p>
+              <p className="pointer">
                 {formatDateTime(f.startDateTime)}~
                 {formatDateTime(f.endDateTime)}
               </p>
@@ -69,7 +69,7 @@ export default function History() {
         {pastReservations.length > 0 ? (
           pastReservations.slice(0, 5).map((p, i) => (
             <div className="reserve_list" key={i}>
-              <p>
+              <p className="pointer">
                 {formatDateTime(p.startDateTime)}~
                 {formatDateTime(p.endDateTime)}
               </p>
