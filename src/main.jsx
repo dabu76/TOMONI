@@ -9,6 +9,7 @@ import Reserve from "./page/Reserve";
 import ReservationComplete from "./page/ReservationComplete .jsx";
 import { UserProvider } from "./context/UserContext";
 import History from "./page/History";
+import ReservationDetail from "./page/ReservationDetail";
 import "./style/custom.scss";
 
 import App from "./App.jsx";
@@ -26,6 +27,11 @@ createRoot(document.getElementById("root")).render(
             <Route path="detail/:id" element={<CaregiverDetail />} />{" "}
             {/* 予約確認・確定ページ */}
             <Route path="Reserve/:id" element={<Reserve />} />{" "}
+            {/* 予約の詳細情報を表示するページ */}
+            <Route
+              path="reservation/:reservationId"
+              element={<ReservationDetail />}
+            />
             <Route
               path="ReservationComplete"
               element={<ReservationComplete></ReservationComplete>}
