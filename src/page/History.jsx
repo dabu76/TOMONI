@@ -1,8 +1,15 @@
 import { useContext } from "react";
 import { UserContext } from "../context/UserContext";
+import { useNavigate } from "react-router-dom";
 
 export default function History() {
   const { user, loading } = useContext(UserContext);
+  const navigate = useNavigate();
+  const handleClickReservation = (reservation) => {
+    navigate(`/reservation/${reservation.id}`, {
+      state: { reservation }, // state로 reservation 객체 전달
+    });
+  };
   if (loading || !user) {
     return <p>ユーザー情報を読み込み中...</p>;
   }
@@ -40,7 +47,10 @@ export default function History() {
         今日の予約内容
         <div className="reserve_list today">
           {todayReservations.length > 0 ? (
-            <p className="pointer">
+            <p
+              className="pointer"
+              onClick={() => handleClickReservation(user.reservations[i])}
+            >
               {formatDateTime(todayReservations[0].startDateTime)}~
               {formatDateTime(todayReservations[0].endDateTime)}
             </p>
@@ -54,7 +64,10 @@ export default function History() {
         {futureReservations.length > 0 ? (
           futureReservations.slice(0, 5).map((f, i) => (
             <div className="reserve_list" key={i}>
-              <p className="pointer">
+              <p
+                className="pointer"
+                onClick={() => handleClickReservation(user.reservations[i])}
+              >
                 {formatDateTime(f.startDateTime)}~
                 {formatDateTime(f.endDateTime)}
               </p>
@@ -69,7 +82,10 @@ export default function History() {
         {pastReservations.length > 0 ? (
           pastReservations.slice(0, 5).map((p, i) => (
             <div className="reserve_list" key={i}>
-              <p className="pointer">
+              <p
+                className="pointer"
+                onClick={() => handleClickReservation(user.reservations[i])}
+              >
                 {formatDateTime(p.startDateTime)}~
                 {formatDateTime(p.endDateTime)}
               </p>
