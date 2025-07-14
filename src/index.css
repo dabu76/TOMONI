@@ -531,3 +531,15 @@ label {
   justify-content: center;
   align-items: center;
 }
+.mypage_container {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  border: none;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.3);
+  background: #f59a60;
+  border: 1px #ccc solid;
+  height: 600px;
+  margin-top: 100px;
+  display: flex;
+}
