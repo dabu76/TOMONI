@@ -13,8 +13,9 @@ export function UserProvider({ children }) {
       .then((res) => {
         setUser(res.data);
       })
-      .catch(() => {
-        setUser(res.data);
+      .catch((err) => {
+        console.error("ユーザー情報の取得に失敗しました。", err);
+        setUser(null);
       })
       .finally(() => {
         setLoading(false);

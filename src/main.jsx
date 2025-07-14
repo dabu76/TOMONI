@@ -10,6 +10,7 @@ import ReservationComplete from "./page/ReservationComplete .jsx";
 import { UserProvider } from "./context/UserContext";
 import History from "./page/History";
 import ReservationDetail from "./page/ReservationDetail";
+import MyPage from "./page/Mypage.jsx";
 import "./style/custom.scss";
 
 import App from "./App.jsx";
@@ -37,6 +38,7 @@ createRoot(document.getElementById("root")).render(
               element={<ReservationComplete></ReservationComplete>}
             />
             <Route path="History" element={<History></History>} />
+            <Route path="mypage" element={<MyPage></MyPage>} />
           </Route>
         </Routes>
       </BrowserRouter>
