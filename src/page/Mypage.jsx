@@ -24,7 +24,7 @@ export default function MyPage() {
         <h3>基本情報</h3>
         <ul className="no-bullets">
           <li>
-            <strong>ユーザーID:</strong> {user.userId}
+            <strong>ユーザーID:</strong> {editedUser.userId}
           </li>
           <li>
             <strong>名前:</strong>{" "}
@@ -36,11 +36,11 @@ export default function MyPage() {
                 }
               />
             ) : (
-              user.name
+              editedUser.name
             )}
           </li>
           <li>
-            <strong>年齢:</strong> {user.age}歳
+            <strong>年齢:</strong> {editedUser.age}歳
           </li>
           <li>
             <strong>疾患:</strong>{" "}
@@ -52,7 +52,7 @@ export default function MyPage() {
                 }
               />
             ) : (
-              user.disease
+              editedUser.disease
             )}
           </li>
           <li>
@@ -65,7 +65,7 @@ export default function MyPage() {
                 }
               />
             ) : (
-              user.notes
+              editedUser.notes
             )}
           </li>
         </ul>
