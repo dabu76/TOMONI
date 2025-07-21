@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { useSignupValidation } from "../hooks/useSignupValidation";
+import axios from "axios";
 
 export default function Signup() {
   // 入力状態・エラーメッセージ・バリデーション関数をフックから取得
@@ -15,14 +16,13 @@ export default function Signup() {
     validateField,
   } = useSignupValidation();
 
-  const [sentCode, setSentCode] = useState(null); // 生成された認証コード
   const [isVerified, setIsVerified] = useState(false); // 認証完了フラグ
   const [showCodeInput, setShowCodeInput] = useState(false); // 認証コード入力欄表示フラグ
   const [authCode, setAuthCode] = useState(""); // ユーザーが入力した認証コード
   const [showPassword, setShowPassword] = useState(false); // パスワード表示切替
 
   // フォーム送信時の処理（バリデーション＋認証チェック）
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
 
     if (!isVerified) {
@@ -31,28 +31,57 @@ export default function Signup() {
     }
 
     if (validate()) {
-      alert("登録成功！");
-      window.location.href = "/"; // または "/index"
+      try {
+        const response = await axios.post(
+          "http://localhost:5238/api/auth/register",
+          {
+            email,
+            password,
+          }
+        );
+        alert("登録成功！");
+        window.location.href = "/";
+      } catch (error) {
+        alert("登録に失敗しました。");
+        console.error(error);
+      }
     }
   };
 
   // 認証コード送信処理
-  const handleSendVerification = () => {
-    const code = Math.floor(100000 + Math.random() * 900000); // 6桁の乱数
-    console.log("認証コード:", code);
-    setSentCode(code.toString());
-    setShowCodeInput(true);
-    setIsVerified(false); // 新しく送信された場合はリセット
+  const handleSendVerification = async () => {
+    try {
+      const response = await axios.post(
+        "http://localhost:5238/api/emailverification/send-verification-code",
+        {
+          email: email,
+        }
+      );
+      alert(response.data.message);
+      setShowCodeInput(true);
+      setIsVerified(false);
+    } catch (error) {
+      alert("認証コードの送信に失敗しました。");
+      console.error(error);
+    }
   };
-
   // 認証コード確認処理
-  const handleVerifyCode = () => {
-    if (authCode === sentCode) {
-      alert("認証完了！");
+  const handleVerifyCode = async () => {
+    try {
+      const response = await axios.post(
+        "http://localhost:5238/api/emailverification/verify-code",
+        {
+          email: email,
+          code: authCode,
+        }
+      );
+
+      alert(response.data.message);
       setIsVerified(true);
-    } else {
+    } catch (error) {
       alert("認証コードが違います。");
       setIsVerified(false);
+      console.error(error);
     }
   };
 
