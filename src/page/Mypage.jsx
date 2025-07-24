@@ -2,58 +2,111 @@ import { useContext, useEffect, useState } from "react";
 import { UserContext } from "../context/UserContext";
 import axios from "axios";
 
-// ユーザーのマイページを表示・編集するコンポーネント
+// ユーザーのマイページ画面
 export default function MyPage() {
-  // グローバルユーザー情報とローディング状態をコンテキストから取得
   const { user, loading } = useContext(UserContext);
 
-  // 編集モードかどうかの状態
-  const [isEditing, setIsEditing] = useState(false);
+  const [isEditing, setIsEditing] = useState(false); // 編集モードの切り替え
+  const [editedUser, setEditedUser] = useState(null); // 編集中のユーザー情報
+  const [newMed, setNewMed] = useState({ name: "", time: "", alarm: false }); // 新規追加する薬 (입력 필드 상태 관리용)
 
-  // 編集用にローカルで保持するユーザーデータ
-  const [editedUser, setEditedUser] = useState(null);
-
-  // 保存ボタンを押したときの処理
-  const handleSave = async () => {
-    const payload = {
-      id: editedUser.id ?? 0, // IDがnullの場合は0を設定
-      userId: editedUser.userId ?? 0,
-      name: editedUser.name,
-      age: Number(editedUser.age), // 年齢を数値に変換
-      disease: editedUser.disease,
-      notes: editedUser.notes,
-      medicines: (editedUser.medicines || []).map((med) => ({
-        name: med.name,
-        time: med.time,
-        alarm: med.alarm,
-      })),
-    };
-    try {
-      // PUTリクエストでサーバーに変更を送信
-      await axios.put("https://localhost:7184/api/user/update", payload, {
-        withCredentials: true,
-      });
-      console.log("更新成功");
-
-      // 編集モードを終了する
-      setIsEditing(false);
-
-      // 編集データを最新状態に再設定する（再レンダリングのため）
-      setEditedUser({ ...editedUser });
-    } catch (err) {
-      console.error("更新失敗:", err);
-    }
-  };
-
-  // user が変更されたときに editedUser を初期化
+  // 初回マウント時またはuser変更時に薬情報も含めてロード
   useEffect(() => {
     if (user) {
-      setEditedUser({ ...user });
+      setEditedUser({
+        ...user,
+        medicines: [], // medicines 속성을 빈 배열로 미리 초기화
+      });
+      fetchMedicines(user); // 그 후에 약 정보 로드
     }
   }, [user]);
 
-  // ローディング中またはユーザー情報がまだ設定されていない場合はローディング表示
-  if (loading || !editedUser) return <p>読み込み中...</p>;
+  // 薬情報を取得して、ユーザー情報と統合してstateに保存する
+  const fetchMedicines = async (userData) => {
+    try {
+      const response = await axios.get(
+        "https://localhost:7184/api/user/medicines",
+        {
+          withCredentials: true,
+        }
+      );
+
+      const medicines = response.data || [];
+
+      setEditedUser((prevUser) => ({
+        ...prevUser,
+        medicines: medicines.map((med) => ({
+          id: med.id,
+          name: med.name,
+          time: med.time,
+          alarm: med.alarm,
+        })),
+      }));
+
+      console.log("薬情報ロード成功:", medicines);
+    } catch (err) {
+      console.error("薬情報ロード失敗:", err);
+      setEditedUser((prevUser) => ({
+        ...prevUser,
+        medicines: [],
+      }));
+    }
+  };
+
+  // 약 삭제 핸들러
+  const handleRemoveMedicine = (idToRemove) => {
+    const updatedMedicines = editedUser.medicines.filter(
+      (med) => med.id !== idToRemove
+    );
+    setEditedUser({ ...editedUser, medicines: updatedMedicines });
+    console.log("薬削除後のmedicines:", updatedMedicines);
+    alert("薬が削除されました。保存ボタンを押してください。"); // 사용자에게 저장 필요 알림
+  };
+
+  // 保存処理（PUTリクエストで更新）
+  const handleSave = async () => {
+    let finalMedicines = [...editedUser.medicines]; // 현재 editedUser의 약 목록을 복사
+
+    // 새로운 약 정보가 입력되어 있다면 최종 목록에 추가
+    if (newMed.name && newMed.time) {
+      // 이름과 시간이 모두 입력되었을 때만 추가
+      finalMedicines = [...finalMedicines, { ...newMed, id: 0 }]; // 새 약은 Id 0으로
+      setNewMed({ name: "", time: "", alarm: false }); // 입력 필드 초기화
+    }
+
+    console.log("保存直前のmedicines:", finalMedicines); // 최종적으로 백엔드로 보낼 약 정보
+
+    if (!editedUser || !finalMedicines) {
+      // medicines가 이제 finalMedicines로 변경됨
+      console.error("editedUserまたはmedicinesが存在しません");
+      return;
+    }
+
+    const payload = {
+      name: editedUser.name,
+      age: Number(editedUser.age),
+      disease: editedUser.disease,
+      notes: editedUser.notes,
+      medicines: finalMedicines, // <-- 최종 약 목록 사용
+    };
+
+    try {
+      await axios.put("https://localhost:7184/api/user/update", payload, {
+        withCredentials: true,
+      });
+      setIsEditing(false);
+      fetchMedicines(user); // 재취득하여 최신 상태로 갱신
+      alert("プロフィールが更新されました！");
+    } catch (err) {
+      console.error("更新失敗:", err);
+      alert("プロフィールの更新に失敗しました。");
+    }
+  };
+
+  // ローディング 또는 데이터 미취득 시 표시
+  if (loading || !editedUser) {
+    return <p>読み込み中...</p>;
+  }
 
   return (
     <div className="mypage_container">
@@ -77,7 +130,18 @@ export default function MyPage() {
             )}
           </li>
           <li>
-            <strong>年齢:</strong> {editedUser.age}歳
+            <strong>年齢:</strong>{" "}
+            {isEditing ? (
+              <input
+                type="number"
+                value={editedUser.age}
+                onChange={(e) =>
+                  setEditedUser({ ...editedUser, age: e.target.value })
+                }
+              />
+            ) : (
+              `${editedUser.age}歳`
+            )}
           </li>
           <li>
             <strong>疾患:</strong>{" "}
@@ -108,67 +172,126 @@ export default function MyPage() {
         </ul>
       </div>
 
-      {/* 服薬情報セクション */}
+      {/* 薬情報セクション */}
       <div className="medicine-section">
         <h3>服薬情報</h3>
         {editedUser.medicines && editedUser.medicines.length > 0 ? (
           <ul className="no-bullets">
-            {editedUser.medicines.map((med, idx) => (
-              <li key={idx}>
+            {editedUser.medicines.map((med) => (
+              <li key={med.id}>
                 {isEditing ? (
                   <>
-                    {/* 薬の名前と時間を編集可能 */}
                     <input
                       value={med.name}
                       onChange={(e) => {
-                        const newMeds = [...editedUser.medicines];
-                        newMeds[idx].name = e.target.value;
-                        setEditedUser({ ...editedUser, medicines: newMeds });
+                        const newList = editedUser.medicines.map((item) =>
+                          item.id === med.id
+                            ? { ...item, name: e.target.value }
+                            : item
+                        );
+                        setEditedUser({ ...editedUser, medicines: newList });
                       }}
                     />
                     <input
                       type="time"
                       value={med.time}
                       onChange={(e) => {
-                        const newMeds = [...editedUser.medicines];
-                        newMeds[idx].time = e.target.value;
-                        setEditedUser({ ...editedUser, medicines: newMeds });
+                        const newList = editedUser.medicines.map((item) =>
+                          item.id === med.id
+                            ? { ...item, time: e.target.value }
+                            : item
+                        );
+                        setEditedUser({ ...editedUser, medicines: newList });
                       }}
                     />
+                    <label>
+                      アラーム:
+                      <input
+                        type="checkbox"
+                        checked={med.alarm}
+                        onChange={(e) => {
+                          const newList = editedUser.medicines.map((item) =>
+                            item.id === med.id
+                              ? { ...item, alarm: e.target.checked }
+                              : item
+                          );
+                          setEditedUser({ ...editedUser, medicines: newList });
+                        }}
+                      />
+                    </label>
+                    <button
+                      onClick={() => handleRemoveMedicine(med.id)}
+                      style={{
+                        marginLeft: "10px",
+                        backgroundColor: "red",
+                        color: "white",
+                        cursor: "pointer",
+                      }}
+                    >
+                      削除
+                    </button>
                   </>
                 ) : (
-                  <>
-                    {med.name} を {med.time} に服用
-                  </>
+                  <span>
+                    {med.name} を {med.time} に服用（アラーム:
+                    {med.alarm ? "あり" : "なし"}）
+                  </span>
                 )}
-                {/* アラームのオンオフ切替ボタン */}
-                <label style={{ marginLeft: "10px" }}>
-                  アラーム:
-                  <button
-                    className="tg_button"
-                    onClick={() => {
-                      const newMeds = [...editedUser.medicines];
-                      newMeds[idx].alarm = !newMeds[idx].alarm;
-                      setEditedUser({ ...editedUser, medicines: newMeds });
-                    }}
-                  >
-                    {med.alarm ? "あり" : "なし"}
-                  </button>
-                </label>
               </li>
             ))}
           </ul>
         ) : (
           <p>服薬情報がありません。</p>
         )}
+
+        {/* 新しい薬を追加 */}
+        {isEditing && (
+          <div style={{ marginTop: "10px" }}>
+            <h4>新しい薬を追加 (保存時に自動追加)</h4> {/* 텍스트 변경 */}
+            <input
+              type="text"
+              placeholder="薬の名前"
+              value={newMed.name}
+              onChange={(e) => setNewMed({ ...newMed, name: e.target.value })}
+            />
+            <input
+              type="time"
+              value={newMed.time}
+              onChange={(e) => setNewMed({ ...newMed, time: e.target.value })}
+            />
+            <label style={{ marginLeft: "10px" }}>
+              アラーム:
+              <input
+                type="checkbox"
+                checked={newMed.alarm}
+                onChange={(e) =>
+                  setNewMed({ ...newMed, alarm: e.target.checked })
+                }
+              />
+            </label>
+            {/* "追加" 버튼을 제거하거나 기능을 변경할 수 있습니다.
+                이 예시에서는 제거했습니다. 만약 추가 버튼이 계속 필요하다면,
+                handleSave 로직에서 newMed를 다루는 방식과 충돌하지 않도록 조절해야 합니다.
+                예: 추가 버튼을 누르면 즉시 editedUser.medicines에 추가되고 newMed를 초기화하는 방식 유지.
+                그러면 handleSave에서는 newMed가 비어있는지 아닌지만 확인하면 됩니다.
+            */}
+          </div>
+        )}
       </div>
 
-      {/* 修正・保存ボタン */}
+      {/* 保存ボタン */}
       <div className="modify_button">
         {!isEditing ? (
-          <button onClick={() => setIsEditing(true)}>修正</button>
+          <button
+            onClick={() => setIsEditing(true)}
+            style={{ cursor: "pointer" }}
+          >
+            修正
+          </button>
         ) : (
-          <button onClick={handleSave}>保存</button>
+          <button onClick={handleSave} style={{ cursor: "pointer" }}>
+            保存
+          </button>
         )}
       </div>
     </div>
