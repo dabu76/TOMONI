@@ -1,37 +1,39 @@
 import { useContext, useEffect, useState } from "react";
-import { useParams, useLocation } from "react-router-dom";
+import { useParams, useLocation, useNavigate } from "react-router-dom";
 import Calendar from "react-calendar";
 import "react-calendar/dist/Calendar.css";
-import { useNavigate } from "react-router-dom";
 import { UserContext } from "../context/UserContext";
+
 export default function Reserve() {
   const { id } = useParams();
   const location = useLocation();
+  const navigate = useNavigate();
   const { caregiver, startDate, endDate } = location.state || {};
-  let [beforetime, setBeforeTime] = useState("");
-  let [aftertime, setAfterTime] = useState("");
-  let [result, setResult] = useState(0);
-  const { user, setUser } = useContext(UserContext);
+  const { user } = useContext(UserContext);
+
+  console.log("👤 user:", user);
+  console.log("✅ user.userId:", user?.userId);
+
+  const [beforetime, setBeforeTime] = useState("");
+  const [aftertime, setAfterTime] = useState("");
+  const [result, setResult] = useState(0);
   const [startDateTime, setStartDateTime] = useState(null);
   const [endDateTime, setEndDateTime] = useState(null);
   const [errorMessage, setErrorMessage] = useState("");
-  const isReserveDisabled = !beforetime || !aftertime;
-
   const [selectedRange, setSelectedRange] = useState(() => {
     if (!startDate || !endDate) return [null, null];
     return [new Date(startDate), new Date(endDate)];
   });
-  //介護士に頼むことがある場合
   const [additionalRequest, setAdditionalRequest] = useState("");
+  const isReserveDisabled = !beforetime || !aftertime;
 
-  //利用者の基本情報
   const [matchingRequest, setMatchingRequest] = useState(null);
-  //利用者の頼む情報
+
   useEffect(() => {
     if (user && caregiver) {
       setMatchingRequest({
         id: 0,
-        clientId: user.id,
+        clientId: user.userId, // 여기 수정
         caregiverId: caregiver.id,
         message: user.notes,
         additionalRequest,
@@ -39,8 +41,7 @@ export default function Reserve() {
       });
     }
   }, [user, caregiver, additionalRequest]);
-  const navigate = useNavigate();
-  //時給計算
+
   useEffect(() => {
     if (
       beforetime &&
@@ -49,23 +50,21 @@ export default function Reserve() {
       selectedRange[0] &&
       selectedRange[1]
     ) {
-      // 開始日時を生成（選択された日付＋入力された時刻）
       const [startH, startM] = beforetime.split(":").map(Number);
       const start = new Date(selectedRange[0]);
       start.setHours(startH, startM, 0, 0);
 
-      // 終了日時を生成（選択された日付＋入力された時刻）
       const [endH, endM] = aftertime.split(":").map(Number);
       const end = new Date(selectedRange[1]);
       end.setHours(endH, endM, 0, 0);
 
-      // 終了が開始よりも前の場合、アラートを出して入力をリセット
       if (end <= start) {
         alert("終了時刻は開始より後にしてください。");
         setAfterTime("");
         setResult(0);
         return;
       }
+
       const diffMs = end - start;
       const diffHours = diffMs / (1000 * 60 * 60);
       const total = Math.round(diffHours * caregiver.hourlyRate);
@@ -91,43 +90,44 @@ export default function Reserve() {
     const [endH, endM] = aftertime.split(":").map(Number);
     const start = new Date(selectedRange[0]);
     start.setHours(startH, startM, 0, 0);
-
     const end = new Date(selectedRange[1]);
     end.setHours(endH, endM, 0, 0);
 
-    const dateTextStart = format(selectedRange[0]);
-    const dateTextEnd = selectedRange[1]
-      ? format(selectedRange[1])
-      : dateTextStart;
+    const dateTextStart = format(start);
+    const dateTextEnd = format(end);
 
-    if (start === end) {
-      alert(`${caregiver.name} さんで ${dateTextStart} に予約されました！`);
-    } else {
-      alert(
-        `${caregiver.name} さんで ${dateTextStart} 〜 ${dateTextEnd} に予約されました！`
-      );
-    }
-    //予約完了ページに移動する
+    alert(
+      `${caregiver.name} さんで ${dateTextStart} 〜 ${dateTextEnd} に予約されました！`
+    );
+
+    console.log("📦 Navigate with:", {
+      caregiver,
+      Total: result,
+      matchingRequest,
+      startDateTime: start.toISOString(),
+      endDateTime: end.toISOString(),
+      userId: user.userId,
+    });
+
     navigate("/ReservationComplete", {
       state: {
-        caregiverName: caregiver.name,
-        dateRange: selectedRange,
-        total: result,
-        matchingRequest: matchingRequest,
+        caregiver,
+        Total: result,
+        matchingRequest,
         startDateTime: start.toISOString(),
         endDateTime: end.toISOString(),
+        userId: user.userId,
       },
     });
   };
+
   return (
     <div className="reserve_page">
       <h2>予約ページ</h2>
-      {(!beforetime || !aftertime) && (
-        <p className="error_message">時間を選択してください。</p>
-      )}
+      {errorMessage && <p className="error_message">{errorMessage}</p>}
       <div className="reserve_time">
         <div>
-          <div>終了時間</div>
+          <div>開始時間</div>
           <input
             type="time"
             onChange={(e) => setBeforeTime(e.target.value)}
@@ -148,7 +148,6 @@ export default function Reserve() {
       </div>
       <p>合計金額: ¥{result}</p>
 
-      {/* 日付選択（すでに選択されていれば反映） */}
       <div className="calendar_area">
         <p>日付を選択してください:</p>
         <Calendar
@@ -192,7 +191,7 @@ export default function Reserve() {
             return isPast || isReserved;
           }}
         />
-        {/*お願いもの入れる */}
+
         <div className="reserve_memo_area">
           <h5>特記事項・希望など（任意）</h5>
           <input
@@ -204,7 +203,7 @@ export default function Reserve() {
           />
         </div>
       </div>
-      {/* 予約確定ボタン */}
+
       <button
         className="reserve_Btn"
         onClick={handleReserve}
