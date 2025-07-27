@@ -5,7 +5,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
   faRightToBracket,
   faUserPlus,
-  faRightFromBracket, // 로그아웃 아이콘
+  faRightFromBracket,
 } from "@fortawesome/free-solid-svg-icons";
 import { useState, useContext } from "react";
 import { UserContext } from "../context/UserContext";
@@ -14,10 +14,9 @@ import axios from "axios";
 export default function Layout() {
   const [showLoginModal, setShowLoginModal] = useState(false);
   const navigate = useNavigate();
-
   const { isLoggedIn, setIsLoggedIn, setUser } = useContext(UserContext);
 
-  // 로그아웃 처리 함수
+  // ログアウト処理
   const handleLogout = async () => {
     try {
       await axios.post(
@@ -28,15 +27,34 @@ export default function Layout() {
       setUser(null);
       setIsLoggedIn(false);
       alert("ログアウトしました。");
-      navigate("/"); // 로그아웃 후 홈으로 이동 (필요에 따라 생략 가능)
+      navigate("/");
     } catch (err) {
       console.error("ログアウトに失敗しました。", err);
     }
   };
 
+  // ログイン成功後の処理
+  const handleLoginSuccess = async () => {
+    try {
+      const res = await axios.get("https://localhost:7184/api/auth/check", {
+        withCredentials: true,
+      });
+      setUser({
+        userId: res.data.userId,
+        email: res.data.email,
+        role: res.data.role,
+      });
+      setIsLoggedIn(true);
+      setShowLoginModal(false);
+      alert("ログインしました。");
+    } catch (error) {
+      console.error("ユーザー情報の取得に失敗", error);
+    }
+  };
+
   return (
     <>
-      {/* 로그인/회원가입/로그아웃 버튼 */}
+      {/* ログイン／新規登録／ログアウトボタン */}
       <p className="login">
         {!isLoggedIn ? (
           <>
@@ -62,19 +80,22 @@ export default function Layout() {
         )}
       </p>
 
-      {/* 로그인 모달 */}
+      {/* ログインモーダル */}
       {showLoginModal && (
-        <LoginModal onClose={() => setShowLoginModal(false)} />
+        <LoginModal
+          onSuccess={handleLoginSuccess}
+          onClose={() => setShowLoginModal(false)}
+        />
       )}
 
-      {/* 헤더 */}
+      {/* ヘッダー */}
       <div className="main_header">
         <h2 className="title">
           <Link to="/">TOMONI</Link>
         </h2>
       </div>
 
-      {/* 내비게이션 */}
+      {/* ナビゲーションバー */}
       <Nav activeKey="1" className="custom-nav">
         <Nav.Item>
           <Nav.Link eventKey="1" href="/">
@@ -93,7 +114,7 @@ export default function Layout() {
         </Nav.Item>
       </Nav>
 
-      {/* 자식 라우트 렌더링 */}
+      {/* 子ルートの表示 */}
       <Outlet />
     </>
   );

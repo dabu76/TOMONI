@@ -7,87 +7,82 @@ import { calculateDistance } from "../hooks/geometry";
 import { useNavigate } from "react-router-dom";
 import { UserContext } from "../context/UserContext";
 
+// 介護士一覧コンポーネント
 export function CaregiverList({
   currentFilters,
   sortValue,
   userLocationLoaded,
   currentUserCoords,
   selectedCityName,
+  setShowLoginModal, // ログインモーダルを開く関数（Appから受け取り）
+  setPendingCaregiver, // 予約対象の介護士を保存する関数（Appから受け取り）
 }) {
-  const [allCaregivers, setAllCaregivers] = useState([]);
-  const { user, setUser } = useContext(UserContext);
-
-  const [dataLoading, setDataLoading] = useState(true);
-  // ホバー時に詳細情報を表示する用の状態管理（個別カードごとに）
-  const [hoveredId, setHoveredId] = useState(null);
-  // 介護士カードをリストで表示する（map処理用）
-  const langMap = {
-    japanese: "日本語",
-    english: "英語",
-    korean: "韓国語",
-  };
+  const [allCaregivers, setAllCaregivers] = useState([]); // 全ての介護士データ
+  const { user } = useContext(UserContext); // ユーザー情報（ログイン状態）
+  const [dataLoading, setDataLoading] = useState(true); // ローディングフラグ
+  const [hoveredId, setHoveredId] = useState(null); // ホバー中のカードID
+  const [likedIds, setLikedIds] = useState(new Set()); // お気に入り状態
   const navigate = useNavigate();
-  const handleCardClick = (caregiver) => {
-    navigate(`/detail/${caregiver.id}`, { state: { caregiver } });
-  };
-  // ハート同期化するための変数
-  const [likedIds, setLikedIds] = useState(new Set());
+
+  // お気に入りトグル処理
   const toggleLike = (caregiverId) => {
     const updatedSet = new Set(likedIds);
-    if (updatedSet.has(caregiverId)) {
-      updatedSet.delete(caregiverId);
-    } else {
-      updatedSet.add(caregiverId);
-    }
+    updatedSet.has(caregiverId)
+      ? updatedSet.delete(caregiverId)
+      : updatedSet.add(caregiverId);
     setLikedIds(updatedSet);
-
-    // user.favorite も更新（必要ならバックエンドにも送信）
-    if (user && setUser) {
-      setUser({ ...user, favorite: [...updatedSet] });
-    }
   };
 
+  // 「予約」ボタンが押されたときの処理
+  const handleReserveClick = (e, caregiver) => {
+    e.stopPropagation();
+    if (!user || !user.userId) {
+      alert("予約にはログインが必要です。");
+      setPendingCaregiver(caregiver);
+      setShowLoginModal(true);
+      return;
+    }
+    navigate(`/detail/${caregiver.id}`, { state: { caregiver } });
+  };
+
+  // JSONLファイルから介護士データを取得
   useEffect(() => {
     setDataLoading(true);
-
     axios
       .get("/data/caregiver_profiles.jsonl")
-      .then((caregiversRes) => {
-        const lines = caregiversRes.data.split("\n").filter(Boolean);
-        const parsedCaregivers = lines
-          .map((line, index) => {
+      .then((res) => {
+        const lines = res.data.split("\n").filter(Boolean);
+        const parsed = lines
+          .map((line, idx) => {
             try {
               return JSON.parse(line);
             } catch (err) {
-              console.error(`Line ${index + 1} JSON パースエラー:`, err);
+              console.error(`Line ${idx + 1} JSON パースエラー`, err);
               return null;
             }
           })
           .filter(Boolean);
-        setAllCaregivers(parsedCaregivers);
+        setAllCaregivers(parsed);
       })
-      .catch((err) => {
-        console.error("データエラー:", err);
-      })
-      .finally(() => {
-        setDataLoading(false);
-      });
+      .catch((err) => console.error("データ読み込みエラー:", err))
+      .finally(() => setDataLoading(false));
   }, []);
-  // user情報が読み込まれたら、お気に入りIDをSetに変換して保存
+
+  // ユーザーのお気に入り（favorite）を初期化
   useEffect(() => {
-    if (user && Array.isArray(user.favorite)) {
+    if (user?.favorite) {
       setLikedIds(new Set(user.favorite));
     }
   }, [user]);
+
+  // フィルター・距離・ソート条件を適用した介護士リストを生成
   const filteredCaregivers = useMemo(() => {
     let filtered = [...allCaregivers];
-
     if (currentFilters.genders?.length > 0) {
       filtered = filtered.filter((c) =>
         currentFilters.genders.includes(c.gender)
       );
     }
-
     if (currentFilters.languages?.length > 0) {
       filtered = filtered.filter(
         (c) =>
@@ -95,35 +90,27 @@ export function CaregiverList({
           currentFilters.languages.every((lang) => c.languages.includes(lang))
       );
     }
-
     if (selectedCityName) {
       filtered = filtered.filter((c) => c.city === selectedCityName);
     }
-
-    if (currentUserCoords?.lat != null && currentUserCoords?.lng != null) {
-      filtered = filtered.map((c) => {
-        if (c.location?.lat != null && c.location?.lng != null) {
-          return {
-            ...c,
-            distance: calculateDistance(
-              currentUserCoords.lat,
-              currentUserCoords.lng,
-              c.location.lat,
-              c.location.lng
-            ),
-          };
-        }
-        return { ...c, distance: null };
-      });
-    } else {
-      filtered = filtered.map((c) => ({ ...c, distance: null }));
+    if (currentUserCoords?.lat && currentUserCoords?.lng) {
+      filtered = filtered.map((c) => ({
+        ...c,
+        distance:
+          c.location?.lat && c.location?.lng
+            ? calculateDistance(
+                currentUserCoords.lat,
+                currentUserCoords.lng,
+                c.location.lat,
+                c.location.lng
+              )
+            : null,
+      }));
     }
-
     if (sortValue === "距離順") {
       filtered.sort((a, b) => {
-        if (a.distance === null && b.distance === null) return 0;
-        if (a.distance === null) return 1;
-        if (b.distance === null) return -1;
+        if (a.distance == null) return 1;
+        if (b.distance == null) return -1;
         return a.distance - b.distance;
       });
     } else if (sortValue === "経歴順") {
@@ -136,13 +123,10 @@ export function CaregiverList({
     } else if (sortValue === "オンライン") {
       filtered = filtered.filter((c) => c.available);
     } else if (sortValue === "気に入り") {
-      if (user && Array.isArray(user.favorite)) {
-        filtered = filtered.filter((c) => user.favorite.includes(c.id));
-      } else {
-        filtered = [];
-      }
+      filtered = user?.favorite
+        ? filtered.filter((c) => user.favorite.includes(c.id))
+        : [];
     }
-
     return filtered;
   }, [
     allCaregivers,
@@ -190,11 +174,18 @@ export function CaregiverList({
               <Card
                 className="caregiver_card"
                 style={{ width: "100%", padding: "0px", position: "relative" }}
-                // ホバーしたときに該当のc.idを記録
                 onMouseEnter={() => setHoveredId(c.id)}
-                // ホバーが外れたらIDをリセット
                 onMouseLeave={() => setHoveredId(null)}
-                onClick={() => handleCardClick(c)}
+                onClick={(e) => {
+                  e.stopPropagation();
+                  if (!user || !user.userId) {
+                    alert("詳細を見るにはログインが必要です。");
+                    setPendingCaregiver(c);
+                    setShowLoginModal(true);
+                    return;
+                  }
+                  navigate(`/detail/${c.id}`, { state: { caregiver: c } });
+                }}
               >
                 <Card.Img
                   style={{ width: "100%", height: "180px" }}
@@ -219,23 +210,21 @@ export function CaregiverList({
                     {c.available ? "勤務可能" : "現在非対応"}
                   </Card.Text>
                   <div
-                    style={{
-                      display: "flex",
-                      justifyContent: "space-between",
-                      alignItems: "center",
-                    }}
+                    style={{ display: "flex", justifyContent: "space-between" }}
                   >
-                    {/*お気に入りボタン（ハート）コンポーネントユーザーが他の介護士を「お気に入り」に追加・削除するためのUI */}
                     <HeartButton
                       caregiverId={c.id}
                       liked={likedIds.has(c.id)}
                       onToggle={toggleLike}
                     />
-                    <Button variant="primary">予約</Button>
+                    <Button
+                      variant="primary"
+                      onClick={(e) => handleReserveClick(e, c)}
+                    >
+                      予約
+                    </Button>
                   </div>
                 </Card.Body>
-
-                {/* hoveredIdとc.idが一致する場合のみ詳細情報を表示 */}
                 {hoveredId === c.id && (
                   <div className="card_hover_detail">
                     <p>プロフィール: {c.profile}</p>
@@ -256,12 +245,7 @@ export function CaregiverList({
                       onToggle={toggleLike}
                     />
                     <Button
-                      onClick={(e) => {
-                        e.stopPropagation();
-                        navigate(`/detail/${c.id}`, {
-                          state: { caregiver: c },
-                        });
-                      }}
+                      onClick={(e) => handleReserveClick(e, c)}
                       variant="primary"
                     >
                       予約
@@ -277,7 +261,6 @@ export function CaregiverList({
           </Col>
         )}
       </Row>
-
       {totalPages > 1 && (
         <div
           style={{
@@ -320,3 +303,10 @@ export function CaregiverList({
     </Container>
   );
 }
+
+// 言語表示用マッピング
+const langMap = {
+  japanese: "日本語",
+  english: "英語",
+  korean: "韓国語",
+};

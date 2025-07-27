@@ -15,7 +15,6 @@ import "./style/custom.scss";
 
 import App from "./App.jsx";
 
-// ✅ StrictMode 제거하여 useEffect 등 중복 실행 방지
 createRoot(document.getElementById("root")).render(
   <UserProvider>
     <BrowserRouter>
