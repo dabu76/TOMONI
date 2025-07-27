@@ -6,8 +6,11 @@ import axios from "axios";
 const API_BASE = "https://localhost:7184/api";
 
 // ログインモーダルのコンポーネント定義
-export default function LoginModal({ onClose }) {
+// onSuccess: ログイン成功後の処理（親で予約画面に遷移）
+// onClose: モーダルを閉じるだけの処理
+export default function LoginModal({ onSuccess, onClose }) {
   const { setIsLoggedIn, setUser } = useContext(UserContext);
+
   // ユーザーが入力したメールアドレスとパスワードを管理するstate
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -27,10 +30,14 @@ export default function LoginModal({ onClose }) {
           withCredentials: true, // 認証用のCookieをリクエストに含めるための設定
         }
       );
+
+      // ログイン状態を更新（グローバルコンテキスト）
       setIsLoggedIn(true);
-      // モーダルを閉じる（親コンポーネントから渡された関数）
-      onClose();
+
+      // ログイン成功時に親コンポーネントへ通知（予約画面へ遷移させる）
+      onSuccess();
     } catch (err) {
+      // エラーメッセージを表示
       if (err.response && err.response.data && err.response.data.message) {
         setError(err.response.data.message);
       } else {
@@ -42,6 +49,7 @@ export default function LoginModal({ onClose }) {
   // モーダルの背景（黒い部分）をクリックした時にモーダルを閉じる処理
   const handleBackgroundClick = (e) => {
     if (e.target.classList.contains("modal_background")) {
+      // モーダルを閉じる（親の onClose を呼び出し）
       onClose();
     }
   };
