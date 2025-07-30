@@ -22,7 +22,7 @@ export default function ReservationComplete() {
       return;
     }
 
-    console.log("✅ Reservation Data to Send:");
+    console.log(" Reservation Data to Send:");
     console.log("caregiverId:", caregiver.id);
     console.log("userId:", userId);
     console.log("startDateTime:", startDateTime);
@@ -37,7 +37,7 @@ export default function ReservationComplete() {
           "https://localhost:7184/api/reservation",
           {
             caregiverId: caregiver.id,
-            clientId: Number(userId), // 안전하게 숫자로 변환
+            clientId: Number(userId),
             startDateTime: new Date(startDateTime).toISOString(),
             endDateTime: new Date(endDateTime).toISOString(),
             total: Number(Total) || 0,
@@ -47,9 +47,9 @@ export default function ReservationComplete() {
           }
         );
 
-        console.log("✅ 予約情報が保存されました:", response.data);
+        console.log(" 予約情報が保存されました:", response.data);
       } catch (err) {
-        console.error("❌ 予約情報の保存に失敗:", err);
+        console.error(" 予約情報の保存に失敗:", err);
         alert("予約情報の保存に失敗しました。");
         navigate("/");
       }
