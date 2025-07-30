@@ -11,6 +11,7 @@ import { UserProvider } from "./context/UserContext";
 import History from "./page/History";
 import ReservationDetail from "./page/ReservationDetail";
 import MyPage from "./page/Mypage.jsx";
+import CaregiverSchedule from "./page/CaregiverSchedule.jsx";
 import "./style/custom.scss";
 
 import App from "./App.jsx";
@@ -34,6 +35,11 @@ createRoot(document.getElementById("root")).render(
           <Route path="ReservationComplete" element={<ReservationComplete />} />
           <Route path="History" element={<History />} />
           <Route path="mypage" element={<MyPage />} />
+          <Route
+            path="caregiver/schedule"
+            element={<CaregiverSchedule />}
+          />{" "}
+          {/*  介護士スケジュールページ */}
         </Route>
       </Routes>
     </BrowserRouter>

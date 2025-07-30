@@ -75,7 +75,7 @@ export default function Signup() {
           code: authCode,
         }
       );
-
+      console.log(authCode);
       alert(response.data.message);
       setIsVerified(true);
     } catch (error) {
