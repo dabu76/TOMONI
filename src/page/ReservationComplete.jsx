@@ -43,7 +43,7 @@ export default function ReservationComplete() {
             total: Number(Total) || 0,
             message: matchingRequest?.message || "",
             additionalRequest: matchingRequest?.additionalRequest || "",
-            status: "confirmed",
+            status: "pending",
           }
         );
 

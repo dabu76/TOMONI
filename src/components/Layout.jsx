@@ -12,7 +12,7 @@ import { UserContext } from "../context/UserContext";
 import axios from "axios";
 
 export default function Layout() {
-  const [showLoginModal, setShowLoginModal] = useState(false);
+  const [showLoginModal, setShowLoginModal] = useState(false); // モーダル表示制御
   const navigate = useNavigate();
   const { isLoggedIn, setIsLoggedIn, setUser } = useContext(UserContext);
 
@@ -33,20 +33,30 @@ export default function Layout() {
     }
   };
 
-  // ログイン成功後の処理
+  // ログイン成功後の処理：ユーザー情報取得 → Context保存 → ページ遷移
   const handleLoginSuccess = async () => {
     try {
       const res = await axios.get("https://localhost:7184/api/auth/check", {
         withCredentials: true,
       });
-      setUser({
+
+      const userData = {
         userId: res.data.userId,
         email: res.data.email,
-        role: res.data.role,
-      });
+        role: res.data.role, // caregiver または customer
+      };
+
+      setUser(userData);
       setIsLoggedIn(true);
       setShowLoginModal(false);
       alert("ログインしました。");
+
+      // ✅ ロールに応じてリダイレクト
+      if (userData.role === "customer") {
+        navigate("/mypage");
+      } else if (userData.role === "caregiver") {
+        navigate("/caregiver/schedule");
+      }
     } catch (error) {
       console.error("ユーザー情報の取得に失敗", error);
     }
@@ -58,9 +68,12 @@ export default function Layout() {
       <p className="login">
         {!isLoggedIn ? (
           <>
+            {/* ログインボタン */}
             <span className="login_btn" onClick={() => setShowLoginModal(true)}>
               <FontAwesomeIcon icon={faRightToBracket} />
             </span>
+
+            {/* 新規登録ボタン */}
             <span
               className="member_btn"
               onClick={() => navigate("/Signup")}
@@ -70,6 +83,7 @@ export default function Layout() {
             </span>
           </>
         ) : (
+          // ログアウトボタン
           <span
             className="logout_btn"
             onClick={handleLogout}
@@ -114,7 +128,7 @@ export default function Layout() {
         </Nav.Item>
       </Nav>
 
-      {/* 子ルートの表示 */}
+      {/* 子ルート（Outlet） */}
       <Outlet />
     </>
   );

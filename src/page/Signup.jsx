@@ -33,10 +33,13 @@ export default function Signup() {
     if (validate()) {
       try {
         const response = await axios.post(
-          "http://localhost:5238/api/auth/register",
+          "https://localhost:7184/api/auth/register",
           {
             email,
             password,
+          },
+          {
+            withCredentials: true, // Cookie認証を使用する場合
           }
         );
         alert("登録成功！");
@@ -52,32 +55,39 @@ export default function Signup() {
   const handleSendVerification = async () => {
     try {
       const response = await axios.post(
-        "http://localhost:5238/api/emailverification/send-verification-code",
+        "https://localhost:7184/api/emailverification/send-verification-code",
         {
           email: email,
+        },
+        {
+          withCredentials: true, // Cookieを付与
         }
       );
       alert(response.data.message);
-      setShowCodeInput(true);
+      setShowCodeInput(true); // コード入力欄を表示
       setIsVerified(false);
     } catch (error) {
       alert("認証コードの送信に失敗しました。");
       console.error(error);
     }
   };
+
   // 認証コード確認処理
   const handleVerifyCode = async () => {
     try {
+      console.log("入力した認証コード:", authCode); // ユーザー入力したコードを確認
       const response = await axios.post(
-        "http://localhost:5238/api/emailverification/verify-code",
+        "https://localhost:7184/api/emailverification/verify-code",
         {
           email: email,
           code: authCode,
+        },
+        {
+          withCredentials: true,
         }
       );
-      console.log(authCode);
       alert(response.data.message);
-      setIsVerified(true);
+      setIsVerified(true); // 認証成功フラグ
     } catch (error) {
       alert("認証コードが違います。");
       setIsVerified(false);
