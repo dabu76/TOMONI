@@ -7,7 +7,14 @@ export default function CaregiverSchedule() {
   const { user } = useContext(UserContext);
   const [schedules, setSchedules] = useState([]);
   const [loading, setLoading] = useState(true);
-
+  const statusLabels = {
+    pending: "承認待ち",
+    confirmed: "承認済み",
+    canceled: "キャンセル済み",
+  };
+  const getStatusLabel = (status) => {
+    return statusLabels[status] || "不明";
+  };
   // スケジュールの取得
   const fetchSchedules = () => {
     if (user?.role === "caregiver") {
@@ -45,12 +52,14 @@ export default function CaregiverSchedule() {
   }
 
   return (
-    <div>
-      <h2>介護士スケジュール一覧</h2>
+    <div className="caregiver_container">
+      <div className="caregiver_header">
+        <h2>介護士スケジュール一覧</h2>
+      </div>
       {schedules.length === 0 ? (
         <p>現在、登録されたスケジュールはありません。</p>
       ) : (
-        <ul>
+        <ul className="pending_list">
           {schedules.map((s, i) => (
             <li key={i}>
               {/* 日時情報 */}
@@ -59,11 +68,18 @@ export default function CaregiverSchedule() {
               <br />
               クライアントID: {s.clientId}
               <br />
-              ステータス: {s.status}
+              予約状況: {getStatusLabel(s.status)}
               <br />
-              {/* 未承認の場合のみボタン表示 */}
+              {/* 未承認なら「承認する」 */}
               {s.status === "pending" && (
-                <button onClick={() => handleConfirm(s.id)}>承認する</button>
+                <div>
+                  <button onClick={() => handleConfirm(s.id)}>承認する</button>
+                  <button onClick={() => handleCancel(s.id)}>取り消す</button>
+                </div>
+              )}
+              {/* 承認済みなら「キャンセルする」 */}
+              {s.status === "confirmed" && (
+                <button onClick={() => handleCancel(s.id)}>取り消す</button>
               )}
               <hr />
             </li>
