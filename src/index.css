@@ -558,3 +558,47 @@ label {
   padding: 13px;
   background-color: #fad4c0;
 }
+.caregiver_container {
+  border: none;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.3);
+  background: #f59a60;
+  position: relative;
+  border: 1px #ccc solid;
+  height: 600px;
+  margin-top: 100px;
+  display: grid;
+  justify-content: center;
+}
+.caregiver_container ul li::marker {
+  content: none;
+}
+.caregiver_header {
+  margin-top: 20px;
+}
+.pending_list {
+  display: flex;
+  flex-direction: column;
+  text-align: center;
+  justify-content: center;
+  width: 400px;
+  border: none;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.3);
+  background-color: #f6a97a;
+}
+.pending_list {
+  padding: 0;
+  margin-bottom: 30px;
+  max-height: 500px;
+  overflow-y: auto;
+}
+.pending_list::-webkit-scrollbar {
+  width: 8px;
+}
+.pending_list::-webkit-scrollbar-thumb {
+  background: #ccc;
+  border-radius: 4px;
+}
+
+.pending_list::-webkit-scrollbar-thumb:hover {
+  background: #999;
+}
