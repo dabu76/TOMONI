@@ -602,3 +602,15 @@ label {
 .pending_list::-webkit-scrollbar-thumb:hover {
   background: #999;
 }
+.caregiverBtn {
+  margin-top: 5px;
+  border-radius: 5px;
+  margin-left: 5px;
+  padding: 5px;
+  background-color: #fad4c0;
+}
+.caregiverBtn:hover {
+  background-color: #f59a60;
+  color: white;
+  border: none;
+}

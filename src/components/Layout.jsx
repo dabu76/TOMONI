@@ -1,4 +1,4 @@
-import { Outlet, Link, useNavigate } from "react-router-dom";
+import { Outlet, useNavigate } from "react-router-dom";
 import Nav from "react-bootstrap/Nav";
 import LoginModal from "./LoginModal";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
@@ -14,7 +14,7 @@ import axios from "axios";
 export default function Layout() {
   const [showLoginModal, setShowLoginModal] = useState(false); // モーダル表示制御
   const navigate = useNavigate();
-  const { isLoggedIn, setIsLoggedIn, setUser } = useContext(UserContext);
+  const { isLoggedIn, setIsLoggedIn, setUser, user } = useContext(UserContext);
 
   // ログアウト処理
   const handleLogout = async () => {
@@ -104,28 +104,65 @@ export default function Layout() {
 
       {/* ヘッダー */}
       <div className="main_header">
-        <h2 className="title">
-          <Link to="/">TOMONI</Link>
+        <h2
+          className="title"
+          style={{ cursor: "pointer" }}
+          onClick={() => {
+            if (isLoggedIn && user?.role === "caregiver") {
+              navigate("/caregiver/schedule"); // ケアギバー用ホーム
+            } else {
+              navigate("/"); // 顧客用ホーム
+            }
+          }}
+        >
+          TOMONI
         </h2>
       </div>
 
       {/* ナビゲーションバー */}
       <Nav activeKey="1" className="custom-nav">
-        <Nav.Item>
-          <Nav.Link eventKey="1" href="/">
-            介護士を探す
-          </Nav.Link>
-        </Nav.Item>
-        <Nav.Item>
-          <Nav.Link eventKey="2" href="/history">
-            依頼履歴
-          </Nav.Link>
-        </Nav.Item>
-        <Nav.Item>
-          <Nav.Link eventKey="3" href="/mypage">
-            アカウント
-          </Nav.Link>
-        </Nav.Item>
+        {user?.role === "caregiver" ? (
+          <>
+            <Nav.Item>
+              <Nav.Link eventKey="1" href="/caregiver/matching">
+                マッチング
+              </Nav.Link>
+            </Nav.Item>
+            <Nav.Item>
+              <Nav.Link eventKey="2" href="/caregiver/reservations">
+                予約一覧
+              </Nav.Link>
+            </Nav.Item>
+            <Nav.Item>
+              <Nav.Link eventKey="3" href="/caregiver/schedule">
+                スケジュール
+              </Nav.Link>
+            </Nav.Item>
+            <Nav.Item>
+              <Nav.Link eventKey="4" href="/caregiver/mypage">
+                マイページ
+              </Nav.Link>
+            </Nav.Item>
+          </>
+        ) : (
+          <>
+            <Nav.Item>
+              <Nav.Link eventKey="1" href="/">
+                介護士を探す
+              </Nav.Link>
+            </Nav.Item>
+            <Nav.Item>
+              <Nav.Link eventKey="2" href="/history">
+                依頼履歴
+              </Nav.Link>
+            </Nav.Item>
+            <Nav.Item>
+              <Nav.Link eventKey="3" href="/mypage">
+                アカウント
+              </Nav.Link>
+            </Nav.Item>
+          </>
+        )}
       </Nav>
 
       {/* 子ルート（Outlet） */}
