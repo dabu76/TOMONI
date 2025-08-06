@@ -51,7 +51,7 @@ export default function Layout() {
       setShowLoginModal(false);
       alert("ログインしました。");
 
-      // ✅ ロールに応じてリダイレクト
+      //  ロールに応じてリダイレクト
       if (userData.role === "customer") {
         navigate("/mypage");
       } else if (userData.role === "caregiver") {
